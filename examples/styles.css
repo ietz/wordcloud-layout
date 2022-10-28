@@ -1,0 +1,7 @@
+#app {
+    resize: both;
+    width: 350px;
+    height: 650px;
+    border: 1px solid red;
+    overflow: hidden;
+}
