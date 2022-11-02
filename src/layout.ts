@@ -31,8 +31,10 @@ export const computeSprites = (config: WordcloudConfig, rotation: number) => {
     const wordWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
     const wordHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
-    const boxHeight = wordHeight + 30;
-    const boxWidth = wordWidth + 10;
+    const sin = Math.abs(Math.sin(rotation));
+    const cos = Math.abs(Math.cos(rotation))
+    const boxHeight = wordWidth * sin + wordHeight * cos;
+    const boxWidth = wordWidth * cos + wordHeight * sin;
 
     ctx.fillStyle = colors.pop();
     ctx.fillRect(x, 0, boxWidth, boxHeight);
