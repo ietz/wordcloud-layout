@@ -1,6 +1,7 @@
 import { WordcloudConfig } from '../../config/model';
 import { measureText } from './measure';
 import { boxPack } from './pack';
+import { drawTexts } from './canvas';
 
 export const computeSprites = (config: WordcloudConfig) => {
   const canvas = document.createElement('canvas');
@@ -16,23 +17,9 @@ export const computeSprites = (config: WordcloudConfig) => {
   canvas.width = canvasSize.width;
   canvas.height = canvasSize.height;
 
-  for (let i = 0; i < config.data.length; i++) {
-    const datum = config.data[i];
-    const measurement = measurements[i];
-    const placement = placements[i];
+  canvas.style['width'] = canvasSize.width + 'px';
+  canvas.style['height'] = canvasSize.height + 'px';
 
-    ctx.font = measurement.font;
 
-    ctx.fillStyle = colors.pop()!;
-    ctx.fillRect(placement.x, placement.y, measurement.boxWidth, measurement.boxHeight);
-
-    ctx.translate(placement.x + measurement.boxWidth / 2, placement.y + measurement.boxHeight / 2);
-    ctx.rotate(datum.rotation ?? 0);
-    ctx.translate(measurement.offsetLeft - measurement.textWidth / 2, -measurement.offsetBottom + measurement.textHeight / 2);
-
-    ctx.fillStyle = '#000';
-    ctx.fillText(datum.text, 0, 0);
-
-    ctx.resetTransform();
-  }
+  drawTexts(ctx, config.data, measurements, placements);
 }
