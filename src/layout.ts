@@ -1,4 +1,5 @@
 import { Word, WordcloudConfig } from './config/model';
+import { boxPack } from './layout/sprites/pack';
 
 let firstLayout: number | undefined = undefined;
 
@@ -14,39 +15,36 @@ export const layout = (config: WordcloudConfig) => {
 
 export const computeSprites = (config: WordcloudConfig, rotation: number) => {
   const canvas = document.createElement('canvas');
-  canvas.width = 512;
-  canvas.height = 512;
 
   document.getElementById('app')!.appendChild(canvas);
   const ctx = canvas.getContext('2d')!;
 
   const colors = ["#4e79a7", "#f28e2c", "#e15759", "#76b7b2", "#59a14f", "#edc949", "#af7aa1", "#ff9da7", "#9c755f", "#bab0ab"];
 
-  let x = 0;
+  const measurements = config.data.map(datum => measureText(ctx, config, datum, rotation));
+  const {placements, ...canvasSize} = boxPack(measurements.map(measurement => [measurement.boxWidth, measurement.boxHeight]));
 
-  const sizes = config.data.map(datum => measureText(ctx, config, datum, rotation));
-  // render texts with large box heights first
-  const order = range(sizes.length).sort((a, b) => sizes[b].boxWidth - sizes[a].boxWidth);
+  canvas.width = canvasSize.width;
+  canvas.height = canvasSize.height;
 
-  for (const i of order) {
+  for (let i = 0; i < config.data.length; i++) {
     const datum = config.data[i];
-    const measure = sizes[i];
+    const measurement = measurements[i];
+    const placement = placements[i];
 
-    ctx.font = measure.font;
+    ctx.font = measurement.font;
 
     ctx.fillStyle = colors.pop()!;
-    ctx.fillRect(x, 0, measure.boxWidth, measure.boxHeight);
+    ctx.fillRect(placement.x, placement.y, measurement.boxWidth, measurement.boxHeight);
 
-    ctx.translate(x + measure.boxWidth / 2, measure.boxHeight / 2);
+    ctx.translate(placement.x + measurement.boxWidth / 2, placement.y + measurement.boxHeight / 2);
     ctx.rotate(rotation);
-    ctx.translate(measure.offsetLeft - measure.textWidth / 2, -measure.offsetBottom + measure.textHeight / 2);
+    ctx.translate(measurement.offsetLeft - measurement.textWidth / 2, -measurement.offsetBottom + measurement.textHeight / 2);
 
     ctx.fillStyle = '#000';
     ctx.fillText(datum.text, 0, 0);
 
     ctx.resetTransform();
-
-    x += measure.boxWidth;
   }
 }
 
@@ -72,9 +70,6 @@ const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConfig, dat
     boxHeight,
   };
 }
-
-const range = (end: number) => Array.from({length: end}, (_, i) => i);
-
 
 interface TextMeasurement {
   font: string,
