@@ -1,7 +1,7 @@
 import { WordcloudConfig } from '../../config/model';
 import { measureText } from './measure';
 import { boxPack } from './pack';
-import { drawTexts } from './canvas';
+import { drawTexts, readSprites } from './canvas';
 
 export const computeSprites = (config: WordcloudConfig) => {
   const canvas = document.createElement('canvas');
@@ -22,4 +22,5 @@ export const computeSprites = (config: WordcloudConfig) => {
 
 
   drawTexts(ctx, config.data, measurements, placements);
+  const sprites = readSprites(ctx, measurements, placements);
 }

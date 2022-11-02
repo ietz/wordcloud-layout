@@ -24,7 +24,7 @@ export const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConf
   };
 }
 
-interface TextMeasurement {
+export interface TextMeasurement {
   font: string,
   textWidth: number,
   textHeight: number,

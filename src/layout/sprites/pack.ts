@@ -46,7 +46,7 @@ export const boxPack = (sizes: Size[]) => {
 
 const range = (end: number) => Array.from({length: end}, (_, i) => i);
 
-interface Placement {
+export interface Placement {
   x: number;
   y: number;
 }
