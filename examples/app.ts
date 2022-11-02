@@ -22,3 +22,5 @@ const observer = new ResizeObserver((a) => {
   scheduleRerender();
 });
 observer.observe(appHost);
+
+window.setInterval(scheduleRerender, 1000 / 60);

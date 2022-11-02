@@ -1,10 +1,18 @@
 import { WordcloudConfig } from './config/model';
 
+let firstLayout: number | undefined = undefined;
+
 export const layout = (config: WordcloudConfig) => {
-  computeSprites(config);
+  if (firstLayout === undefined) {
+    firstLayout = Date.now();
+  }
+
+  const time = Date.now() - firstLayout;
+
+  computeSprites(config, 2 * Math.PI * time / 1000 / 8);
 };
 
-export const computeSprites = (config: WordcloudConfig) => {
+export const computeSprites = (config: WordcloudConfig, rotation: number) => {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
   canvas.height = 512;
@@ -16,23 +24,28 @@ export const computeSprites = (config: WordcloudConfig) => {
 
   let x = 0;
 
-  const ms = [];
-
   for (const datum of config.data) {
     ctx.font = `${config.fontWeight} ${datum.size}px ${config.fontFamily}`;
 
     const metrics = ctx.measureText(datum.text);
-    const width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
-    const height = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const wordWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
+    const wordHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+
+    const boxHeight = wordHeight + 30;
+    const boxWidth = wordWidth + 10;
 
     ctx.fillStyle = colors.pop();
-    ctx.fillRect(x, 0, width, height);
+    ctx.fillRect(x, 0, boxWidth, boxHeight);
+
+    ctx.translate(x + boxWidth / 2, boxHeight / 2);
+    ctx.rotate(rotation);
+    ctx.translate(metrics.actualBoundingBoxLeft -wordWidth / 2, -metrics.actualBoundingBoxDescent + wordHeight / 2);
 
     ctx.fillStyle = '#000';
-    ctx.fillText(datum.text, x + metrics.actualBoundingBoxLeft, metrics.actualBoundingBoxAscent);
+    ctx.fillText(datum.text, 0, 0);
 
-    x += width;
+    ctx.resetTransform();
+
+    x += boxWidth;
   }
-
-  console.table(ms);
 }
