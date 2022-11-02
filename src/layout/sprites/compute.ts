@@ -11,13 +11,13 @@ export const computeSprites = (config: WordcloudConfig): Sprite[] => {
   const ctx = canvas.getContext('2d')!;
 
   const measurements = config.data.map(datum => measureText(ctx, config, datum));
-  const {placements, ...canvasSize} = boxPack(measurements.map(measurement => [measurement.boxWidth, measurement.boxHeight]));
+  const {positions, ...canvasSize} = boxPack(measurements.map(measurement => [measurement.boxWidth, measurement.boxHeight]));
 
   canvas.width = canvasSize.width;
   canvas.height = canvasSize.height;
 
-  drawTexts(ctx, config.data, measurements, placements);
-  const spriteData = readSpriteData(ctx, measurements, placements);
+  drawTexts(ctx, config.data, measurements, positions);
+  const spriteData = readSpriteData(ctx, measurements, positions);
 
   return range(config.data.length).map(i => {
     const measurement = measurements[i];
@@ -41,7 +41,7 @@ export interface Sprite {
   size: {
     width: number,
     height: number,
-  },
+  }
   textBaselineOffset: {
     left: number,
     bottom: number,

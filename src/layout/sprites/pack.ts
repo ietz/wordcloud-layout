@@ -1,12 +1,13 @@
 import { Size } from '../../config/model';
 import { range } from '../../util';
+import { Position } from '../../common';
 
 export const boxPack = (sizes: Size[]) => {
   // place texts with large box heights first
   const order = range(sizes.length).sort((a, b) => sizes[b][1] - sizes[a][1]);
-  const placements: (Placement | undefined)[] = Array.from({length: sizes.length});
+  const positions: (Position | undefined)[] = Array.from({length: sizes.length});
   // place first item at top left corner
-  placements[order[0]] = {x: 0, y: 0};
+  positions[order[0]] = {x: 0, y: 0};
 
   let x = sizes[order[0]][0];
   let y = 0;
@@ -32,7 +33,7 @@ export const boxPack = (sizes: Size[]) => {
       lineHeight = height;
     }
 
-    placements[order[i]] = {x, y};
+    positions[order[i]] = {x, y};
 
     remainingOnFirstLine -= 1;
     x += width;
@@ -41,11 +42,6 @@ export const boxPack = (sizes: Size[]) => {
   return {
     width: lineWidthLimit ?? x,
     height: y + lineHeight,
-    placements: placements as Placement[],
+    positions: positions as Position[],
   }
-}
-
-export interface Placement {
-  x: number;
-  y: number;
 }
