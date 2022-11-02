@@ -9,8 +9,8 @@ export const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConf
 
   const sin = Math.abs(Math.sin(rotation));
   const cos = Math.abs(Math.cos(rotation))
-  const boxHeight = textWidth * sin + textHeight * cos;
-  const boxWidth = textWidth * cos + textHeight * sin;
+  const boxHeight = Math.ceil(textWidth * sin + textHeight * cos);
+  const boxWidth = Math.ceil(textWidth * cos + textHeight * sin);
 
   return {
     font: ctx.font,
