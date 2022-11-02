@@ -28,20 +28,20 @@ export const computeSprites = (config: WordcloudConfig, rotation: number) => {
     ctx.font = `${config.fontWeight} ${datum.size}px ${config.fontFamily}`;
 
     const metrics = ctx.measureText(datum.text);
-    const wordWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
-    const wordHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+    const textWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
+    const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
     const sin = Math.abs(Math.sin(rotation));
     const cos = Math.abs(Math.cos(rotation))
-    const boxHeight = wordWidth * sin + wordHeight * cos;
-    const boxWidth = wordWidth * cos + wordHeight * sin;
+    const boxHeight = textWidth * sin + textHeight * cos;
+    const boxWidth = textWidth * cos + textHeight * sin;
 
     ctx.fillStyle = colors.pop();
     ctx.fillRect(x, 0, boxWidth, boxHeight);
 
     ctx.translate(x + boxWidth / 2, boxHeight / 2);
     ctx.rotate(rotation);
-    ctx.translate(metrics.actualBoundingBoxLeft -wordWidth / 2, -metrics.actualBoundingBoxDescent + wordHeight / 2);
+    ctx.translate(metrics.actualBoundingBoxLeft -textWidth / 2, -metrics.actualBoundingBoxDescent + textHeight / 2);
 
     ctx.fillStyle = '#000';
     ctx.fillText(datum.text, 0, 0);
