@@ -23,12 +23,12 @@ export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measureme
   }
 }
 
-export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMeasurement[], placements: Placement[]): Sprite[] => {
+export const readSpriteData = (ctx: CanvasRenderingContext2D, measurements: TextMeasurement[], placements: Placement[]): SpriteData[] => {
   const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-  const sprites: Sprite[] = [];
+  const sprites: SpriteData[] = [];
 
   for (let i = 0; i < measurements.length; i++) {
-    const sprite: Sprite = [];
+    const sprite: SpriteData = [];
     sprites.push(sprite);
 
     const yEnd = placements[i].y + measurements[i].boxHeight;
@@ -52,4 +52,4 @@ export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMea
   return sprites;
 }
 
-export type Sprite = number[];
+export type SpriteData = number[];

@@ -1,4 +1,5 @@
 import { Size } from '../../config/model';
+import { range } from '../../util';
 
 export const boxPack = (sizes: Size[]) => {
   // place texts with large box heights first
@@ -43,8 +44,6 @@ export const boxPack = (sizes: Size[]) => {
     placements: placements as Placement[],
   }
 }
-
-const range = (end: number) => Array.from({length: end}, (_, i) => i);
 
 export interface Placement {
   x: number;
