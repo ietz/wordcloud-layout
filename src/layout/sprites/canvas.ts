@@ -36,7 +36,7 @@ export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMea
     for (let y = placements[i].y; y < yEnd; y++) {
       for (let blockX = placements[i].x; blockX < xEnd; blockX += BLOCK_SIZE) {
         let block = 0;
-        for (let blockPixelIndex = 0; blockPixelIndex < BLOCK_SIZE && blockX + blockPixelIndex <= xEnd; blockPixelIndex++) {
+        for (let blockPixelIndex = 0; blockPixelIndex < BLOCK_SIZE && blockX + blockPixelIndex < xEnd; blockPixelIndex++) {
           const pixelIndex = y * imageData.width + blockX + blockPixelIndex;
           const pixelAlpha = imageData.data[pixelIndex * 4 + 3];
           if (pixelAlpha > 0) {
