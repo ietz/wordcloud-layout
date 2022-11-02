@@ -2,7 +2,7 @@ import { Size } from '../../config/model';
 
 export const boxPack = (sizes: Size[]) => {
   // place texts with large box heights first
-  const order = range(sizes.length).sort((a, b) => sizes[b][0] - sizes[a][0]);
+  const order = range(sizes.length).sort((a, b) => sizes[b][1] - sizes[a][1]);
   const placements: (Placement | undefined)[] = Array.from({length: sizes.length});
   // place first item at top left corner
   placements[order[0]] = {x: 0, y: 0};
@@ -35,7 +35,6 @@ export const boxPack = (sizes: Size[]) => {
 
     remainingOnFirstLine -= 1;
     x += width;
-
   }
 
   return {
