@@ -1,20 +1,17 @@
 import { WordcloudConfig } from './model';
+import { layout } from '../layout';
 
 export class Wordcloud {
   constructor(private readonly config: WordcloudConfig) {
   }
 
   size = this.configAccessor('size');
-  fontSize = this.configAccessor('fontSize');
   fontWeight = this.configAccessor('fontWeight');
   fontFamily = this.configAccessor('fontFamily');
+  data = this.configAccessor('data');
 
   start() {
-    return this;
-  }
-
-  stop() {
-    return this;
+    return layout(this.config);
   }
 
   configAccessor<Property extends keyof WordcloudConfig>(property: Property) {
@@ -39,6 +36,6 @@ export const wordcloud = () => {
     size: [512, 512],
     fontFamily: 'sans-serif',
     fontWeight: 400,
-    fontSize: 12,
+    data: [],
   })
 }

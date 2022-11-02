@@ -1,8 +1,13 @@
-export type Size = [width: number, height: number];
-
 export interface WordcloudConfig {
   size: Size,
   fontFamily: string,
   fontWeight: number | string,
-  fontSize: number,
+  data: Word[],
+}
+
+export type Size = [width: number, height: number];
+
+export interface Word {
+  text: string;
+  size: number;
 }
