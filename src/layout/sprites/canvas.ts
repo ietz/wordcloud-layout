@@ -2,7 +2,7 @@ import { Word } from '../../config/model';
 import { TextMeasurement } from './measure';
 import { Placement } from './pack';
 
-const BLOCK_SIZE = 32;
+export const BLOCK_SIZE = 32;
 
 export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measurements: TextMeasurement[], placements: Placement[]) => {
   for (let i = 0; i < data.length; i++) {
