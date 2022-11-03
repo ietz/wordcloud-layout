@@ -45,3 +45,5 @@ export interface Sprite {
     bottom: number,
   }
 }
+
+export const getSpriteBlockWidth = (sprite: Sprite) => sprite.data.length / sprite.size.height;

@@ -1,8 +1,7 @@
 import { Word } from '../../config/model';
 import { TextMeasurement } from './measure';
 import { Position } from '../../common';
-
-export const BLOCK_SIZE = 32;
+import { BLOCK_SIZE } from '../../util';
 
 export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measurements: TextMeasurement[], positions: Position[]) => {
   for (let i = 0; i < data.length; i++) {
@@ -40,7 +39,7 @@ export const readSpriteData = (ctx: CanvasRenderingContext2D, measurements: Text
           const pixelIndex = y * imageData.width + blockX + blockPixelIndex;
           const pixelAlpha = imageData.data[pixelIndex * 4 + 3];
           if (pixelAlpha > 0) {
-            block |= 1 << (BLOCK_SIZE - blockPixelIndex);
+            block |= 1 << (BLOCK_SIZE - 1 - blockPixelIndex);
           }
         }
 
