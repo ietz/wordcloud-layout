@@ -26,7 +26,7 @@ export const readSpriteData = (ctx: CanvasRenderingContext2D, measurements: Text
   const sprites: SpriteData[] = [];
 
   for (let i = 0; i < measurements.length; i++) {
-    const sprite: SpriteData = [];
+    const sprite: number[] = [];
     sprites.push(sprite);
 
     const yEnd = positions[i].y + measurements[i].boxHeight;
@@ -50,4 +50,7 @@ export const readSpriteData = (ctx: CanvasRenderingContext2D, measurements: Text
   return sprites;
 }
 
-export type SpriteData = number[];
+export type SpriteData = {
+  length: number;
+  [index: number]: number;
+};
