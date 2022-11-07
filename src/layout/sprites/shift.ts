@@ -31,8 +31,8 @@ export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
       height: sprite.size.height,
     },
     textBaselineOffset: {
-      left: sprite.textBaselineOffset.left - offset,
-      bottom: sprite.textBaselineOffset.bottom,
+      x: sprite.textBaselineOffset.x - offset,
+      y: sprite.textBaselineOffset.y,
     },
     data: newData,
   }

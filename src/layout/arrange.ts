@@ -1,5 +1,5 @@
 import { rightShiftSprite, Sprite } from './sprites';
-import { WordcloudConfig } from '../config/model';
+import { Size, WordcloudConfig } from '../config/model';
 import { BLOCK_SIZE, isBlockPixelOccupied, range } from '../util';
 import { Position } from '../common';
 import { getSpriteBlockWidth } from './sprites/compute';
@@ -18,13 +18,15 @@ export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position |
   const positions: (Position | undefined)[] = Array.from({length: sprites.length}, () => undefined);
   for (const i of order) {
     for (let trial = 0; trial < 30; trial++) {
-      const candidatePosition = suggestPosition({width: config.size[0], height: config.size[1]});
-      if (intersects(board, sprites[i], candidatePosition)) {
+      const suggestedTextPosition = suggestPosition(config.size);
+      const {textPosition, spritePosition} = alignPosition(suggestedTextPosition, sprites[i]);
+
+      if (intersects(board, sprites[i], spritePosition)) {
         continue;
       }
 
-      place(board, sprites[i], candidatePosition);
-      positions[i] = candidatePosition;
+      place(board, sprites[i], spritePosition);
+      positions[i] = textPosition;
       break;
     }
   }
@@ -34,32 +36,45 @@ export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position |
   return positions;
 }
 
-const suggestPosition = (size: {width: number, height: number}): Position => {
+const suggestPosition = (size: Size): Position => {
   return {
-    x: Math.floor(Math.random() * size.width),
-    y: Math.floor(Math.random() * size.height)
+    x: Math.floor(Math.random() * size[0]),
+    y: Math.floor(Math.random() * size[1])
   }
 }
 
-const intersects = (board: Board, sprite: Sprite, position: Position): boolean => {
-  if (board.width < position.x + sprite.size.width) {
+const alignPosition = (suggestedTextPosition: Position, sprite: Sprite): {textPosition: Position, spritePosition: Position} => {
+  // The sprite can only be placed at integer grid positions such as [10, 15] but not at [10.2, 15.7].
+  // This function shifts the suggested text position slightly such that the sprite can be placed at an integer grid position.
+  //
+  // Example: If the suggestedTextPosition is [100, 100] and the sprite has a textBaselineOffset of {x: 0.2, y: 25.7}
+  // the resulting spritePosition would be [100, 74] and the textPosition [100.2, 99.7].
+  // If we insert the sprite at [100, 74], the text in the sprite would appear at [100+0.2=100.2, 74+25.7=99.7].
+
+  const spritePosition: Position = {
+    x: Math.round(suggestedTextPosition.x - sprite.textBaselineOffset.x),
+    y: Math.round(suggestedTextPosition.y - sprite.textBaselineOffset.y),
+  }
+
+  const textPosition: Position = {
+    x: spritePosition.x + sprite.textBaselineOffset.x,
+    y: spritePosition.y + sprite.textBaselineOffset.y,
+  }
+
+  return {textPosition, spritePosition};
+}
+
+const intersects = (board: Board, sprite: Sprite, spritePosition: Position): boolean => {
+  if (board.width < spritePosition.x + sprite.size.width) {
     return true;
-  } else if (board.data.length / board.blockWidth < position.y + sprite.size.height) {
+  } else if (board.data.length / board.blockWidth < spritePosition.y + sprite.size.height) {
     return true;
   } else {
     return false;
   }
 }
 
-const place = (board: Board, sprite: Sprite, textPosition: Position) => {
-  // Position the sprite such that the text ends up at the textPosition indicated by the textPosition parameter, not
-  // just the upper left corner of the sprite.
-
-  const spritePosition: Position = {
-    x: Math.round(textPosition.x - sprite.textBaselineOffset.left),
-    y: Math.round(textPosition.y - sprite.textBaselineOffset.bottom),
-  }
-
+const place = (board: Board, sprite: Sprite, spritePosition: Position) => {
   const startBlockX = Math.floor(spritePosition.x / BLOCK_SIZE);
   const spriteOffset = spritePosition.x - startBlockX * BLOCK_SIZE;
   const alignedSprite = rightShiftSprite(sprite, spriteOffset);

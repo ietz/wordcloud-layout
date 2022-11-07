@@ -27,8 +27,8 @@ export const computeSprites = (config: WordcloudConfig): Sprite[] => {
         height: measurement.boxHeight,
       },
       textBaselineOffset: {
-        left: measurement.textX,
-        bottom: measurement.textY,
+        x: measurement.textX,
+        y: measurement.textY,
       },
     }
   })
@@ -41,8 +41,8 @@ export interface Sprite {
     height: number,
   }
   textBaselineOffset: {
-    left: number,
-    bottom: number,
+    x: number,
+    y: number,
   }
 }
 
