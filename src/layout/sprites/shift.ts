@@ -13,8 +13,8 @@ export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
   }
 
   const blockWidth = getSpriteBlockWidth(sprite);
-  const availableSpace = blockWidth * BLOCK_SIZE - offset;
-  const outputBlockWidth = availableSpace <= offset ? blockWidth : blockWidth + 1;
+  const availableSpace = blockWidth * BLOCK_SIZE - sprite.size.width;
+  const outputBlockWidth = offset <= availableSpace ? blockWidth : blockWidth + 1;
 
   const newData = range(sprite.size.height).flatMap(y =>
     range(outputBlockWidth).map(x => {

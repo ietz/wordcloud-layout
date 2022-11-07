@@ -65,7 +65,7 @@ const place = (board: Board, sprite: Sprite, textPosition: Position) => {
   const alignedSprite = rightShiftSprite(sprite, spriteOffset);
   const alignedSpriteBlockWidth = getSpriteBlockWidth(alignedSprite);
 
-  for (let spriteY = 0; spriteY < sprite.size.height; spriteY++) {
+  for (let spriteY = 0; spriteY < alignedSprite.size.height; spriteY++) {
 
     for (let spriteBlockX = 0; spriteBlockX < alignedSpriteBlockWidth; spriteBlockX++) {
       const boardBlockIndex = (spritePosition.y + spriteY) * board.blockWidth + startBlockX + spriteBlockX;
