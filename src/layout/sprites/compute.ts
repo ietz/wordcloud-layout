@@ -6,7 +6,7 @@ import { range } from '../../util';
 
 export const computeSprites = (config: WordcloudConfig): Sprite[] => {
   const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d')!;
+  const ctx = canvas.getContext('2d', {willReadFrequently: true})!;
 
   const measurements = config.data.map(datum => measureText(ctx, config, datum));
   const {positions, ...canvasSize} = boxPack(measurements.map(measurement => [measurement.boxWidth, measurement.boxHeight]));
