@@ -12,7 +12,7 @@ export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position |
     blockWidth,
   };
 
-  const areas = sprites.map(sprite => sprite.size.width * sprite.size.height);
+  const areas = sprites.map(sprite => sprite.size[0] * sprite.size[1]);
   const order = range(sprites.length).sort((a, b) => areas[b] - areas[a]);
 
   const positions: (Position | undefined)[] = Array.from({length: sprites.length}, () => undefined);
@@ -65,9 +65,9 @@ const alignPosition = (suggestedTextPosition: Position, sprite: Sprite): {textPo
 }
 
 const intersects = (board: Board, sprite: Sprite, spritePosition: Position): boolean => {
-  if (board.width < spritePosition.x + sprite.size.width) {
+  if (board.width < spritePosition.x + sprite.size[0]) {
     return true;
-  } else if (board.data.length / board.blockWidth < spritePosition.y + sprite.size.height) {
+  } else if (board.data.length / board.blockWidth < spritePosition.y + sprite.size[1]) {
     return true;
   } else {
     return false;
@@ -80,7 +80,7 @@ const place = (board: Board, sprite: Sprite, spritePosition: Position) => {
   const alignedSprite = rightShiftSprite(sprite, spriteOffset);
   const alignedSpriteBlockWidth = getSpriteBlockWidth(alignedSprite);
 
-  for (let spriteY = 0; spriteY < alignedSprite.size.height; spriteY++) {
+  for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
 
     for (let spriteBlockX = 0; spriteBlockX < alignedSpriteBlockWidth; spriteBlockX++) {
       const boardBlockIndex = (spritePosition.y + spriteY) * board.blockWidth + startBlockX + spriteBlockX;

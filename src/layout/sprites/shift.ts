@@ -13,10 +13,10 @@ export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
   }
 
   const blockWidth = getSpriteBlockWidth(sprite);
-  const availableSpace = blockWidth * BLOCK_SIZE - sprite.size.width;
+  const availableSpace = blockWidth * BLOCK_SIZE - sprite.size[0];
   const outputBlockWidth = offset <= availableSpace ? blockWidth : blockWidth + 1;
 
-  const newData = range(sprite.size.height).flatMap(y =>
+  const newData = range(sprite.size[1]).flatMap(y =>
     range(outputBlockWidth).map(x => {
       const originalIndex = y * blockWidth + x;
       const left = x > 0 ? sprite.data[originalIndex - 1] << (BLOCK_SIZE - offset) : 0;
@@ -26,10 +26,10 @@ export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
   )
 
   return {
-    size: {
-      width: sprite.size.width + offset,
-      height: sprite.size.height,
-    },
+    size: [
+      sprite.size[0] + offset,
+      sprite.size[1],
+    ],
     textBaselineOffset: {
       x: sprite.textBaselineOffset.x - offset,
       y: sprite.textBaselineOffset.y,
