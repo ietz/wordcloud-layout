@@ -51,16 +51,24 @@ const intersects = (board: Board, sprite: Sprite, position: Position): boolean =
   }
 }
 
-const place = (board: Board, sprite: Sprite, position: Position) => {
-  const startBlockX = Math.floor(position.x / BLOCK_SIZE);
-  const spriteOffset = position.x - startBlockX * BLOCK_SIZE;
+const place = (board: Board, sprite: Sprite, textPosition: Position) => {
+  // Position the sprite such that the text ends up at the textPosition indicated by the textPosition parameter, not
+  // just the upper left corner of the sprite.
+
+  const spritePosition: Position = {
+    x: Math.round(textPosition.x - sprite.textBaselineOffset.left),
+    y: Math.round(textPosition.y - sprite.textBaselineOffset.bottom),
+  }
+
+  const startBlockX = Math.floor(spritePosition.x / BLOCK_SIZE);
+  const spriteOffset = spritePosition.x - startBlockX * BLOCK_SIZE;
   const alignedSprite = rightShiftSprite(sprite, spriteOffset);
   const alignedSpriteBlockWidth = getSpriteBlockWidth(alignedSprite);
 
   for (let spriteY = 0; spriteY < sprite.size.height; spriteY++) {
 
     for (let spriteBlockX = 0; spriteBlockX < alignedSpriteBlockWidth; spriteBlockX++) {
-      const boardBlockIndex = (position.y + spriteY) * board.blockWidth + startBlockX + spriteBlockX;
+      const boardBlockIndex = (spritePosition.y + spriteY) * board.blockWidth + startBlockX + spriteBlockX;
       const spriteBlockIndex = spriteY * alignedSpriteBlockWidth + spriteBlockX;
 
       board.data[boardBlockIndex] |= alignedSprite.data[spriteBlockIndex];
@@ -77,6 +85,7 @@ const showBoard = (board: Board) => {
   canvas.style.position = 'absolute';
   canvas.style.top = '0';
   canvas.style.left = '0';
+  canvas.style.zIndex = '-1';
 
   canvas.getContext('2d')!.putImageData(toImageData(board), 0, 0);
 

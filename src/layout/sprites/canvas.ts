@@ -11,9 +11,8 @@ export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measureme
 
     ctx.font = measurement.font;
 
-    ctx.translate(position.x + measurement.boxWidth / 2, position.y + measurement.boxHeight / 2);
+    ctx.translate(position.x + measurement.textX, position.y + measurement.textY);
     ctx.rotate(datum.rotation ?? 0);
-    ctx.translate(measurement.offsetLeft - measurement.textWidth / 2, -measurement.offsetBottom + measurement.textHeight / 2);
 
     ctx.fillStyle = '#000';
     ctx.fillText(datum.text, 0, 0);

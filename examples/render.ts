@@ -41,7 +41,7 @@ const buildWordcloudSvg = (layout: Wordcloud, positions: (Position | undefined)[
       .style('font-family', layout.fontFamily())
       .style('font-weight', layout.fontWeight())
       .style('fill', '#000')
-      .attr('transform', `translate(${position.x},${position.y})`)
+      .attr('transform', `translate(${position.x},${position.y}) rotate(${(d.rotation ?? 0) * (180 / Math.PI)})`)
       .build();
 
     text.textContent = d.text;
