@@ -21,12 +21,16 @@ export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position |
       const suggestedTextPosition = suggestPosition(config.size);
       const {textPosition, spritePosition} = alignPosition(suggestedTextPosition, sprites[i]);
 
-      if (intersects(board, sprites[i], spritePosition)) {
+      const startBlockX = Math.floor(spritePosition.x / BLOCK_SIZE);
+      const alignedSprite = rightShiftSprite(sprites[i], spritePosition.x - startBlockX * BLOCK_SIZE);
+
+      if (intersects(board, alignedSprite, spritePosition)) {
         continue;
       }
 
-      place(board, sprites[i], spritePosition);
+      place(board, alignedSprite, startBlockX, spritePosition.y);
       positions[i] = textPosition;
+
       break;
     }
   }
@@ -74,23 +78,32 @@ const intersects = (board: Board, sprite: Sprite, spritePosition: Position): boo
   }
 }
 
-const place = (board: Board, sprite: Sprite, spritePosition: Position) => {
-  const startBlockX = Math.floor(spritePosition.x / BLOCK_SIZE);
-  const spriteOffset = spritePosition.x - startBlockX * BLOCK_SIZE;
-  const alignedSprite = rightShiftSprite(sprite, spriteOffset);
-  const alignedSpriteBlockWidth = getSpriteBlockWidth(alignedSprite);
-
-  for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
-
-    for (let spriteBlockX = 0; spriteBlockX < alignedSpriteBlockWidth; spriteBlockX++) {
-      const boardBlockIndex = (spritePosition.y + spriteY) * board.blockWidth + startBlockX + spriteBlockX;
-      const spriteBlockIndex = spriteY * alignedSpriteBlockWidth + spriteBlockX;
-
+const place = (board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) => {
+  for (const {boardBlockIndex, spriteBlockIndex} of spriteBoardPositions(board, alignedSprite, startBlockX, startY)) {
+    if (boardBlockIndex !== undefined) {
       board.data[boardBlockIndex] |= alignedSprite.data[spriteBlockIndex];
     }
   }
 }
 
+function* spriteBoardPositions(board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) {
+  const boardHeight = board.data.length / board.blockWidth;
+  const spriteBlockWidth = getSpriteBlockWidth(alignedSprite);
+
+  for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
+    for (let spriteBlockX = 0; spriteBlockX < spriteBlockWidth; spriteBlockX++) {
+      const boardY = startY + spriteY;
+      const boardBlockX = startBlockX + spriteBlockX;
+
+      const isValidBoardPosition = 0 <= boardY && boardY < boardHeight && 0 <= boardBlockX && boardBlockX < board.blockWidth
+
+      yield {
+        boardBlockIndex: isValidBoardPosition ? boardY * board.blockWidth + boardBlockX : undefined,
+        spriteBlockIndex: spriteY * spriteBlockWidth + spriteBlockX,
+      }
+    }
+  }
+}
 
 const showBoard = (board: Board) => {
   const canvas = document.createElement('canvas');
