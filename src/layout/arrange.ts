@@ -74,13 +74,6 @@ const intersects = (board: Board, alignedSprite: Sprite, startBlockX: number, st
       ? alignedSprite.data[spriteBlockIndex]  // sprite block exends beyond the board => every pixel is a collision
       : alignedSprite.data[spriteBlockIndex] & board.data[boardBlockIndex];
 
-    const spriteBlockWidth = getSpriteBlockWidth(alignedSprite);
-    const spriteY = Math.floor(spriteBlockIndex / spriteBlockWidth);
-
-    if (spriteY + startY < 0) {
-      debugger;
-    }
-
     if (blockCollisions !== 0) {
       return true;
     }
