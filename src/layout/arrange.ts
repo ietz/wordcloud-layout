@@ -24,7 +24,7 @@ export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position |
       const startBlockX = Math.floor(spritePosition.x / BLOCK_SIZE);
       const alignedSprite = rightShiftSprite(sprites[i], spritePosition.x - startBlockX * BLOCK_SIZE);
 
-      if (intersects(board, alignedSprite, spritePosition)) {
+      if (intersects(board, alignedSprite, startBlockX, spritePosition.y)) {
         continue;
       }
 
@@ -68,14 +68,25 @@ const alignPosition = (suggestedTextPosition: Position, sprite: Sprite): {textPo
   return {textPosition, spritePosition};
 }
 
-const intersects = (board: Board, sprite: Sprite, spritePosition: Position): boolean => {
-  if (board.width < spritePosition.x + sprite.size[0]) {
-    return true;
-  } else if (board.data.length / board.blockWidth < spritePosition.y + sprite.size[1]) {
-    return true;
-  } else {
-    return false;
+const intersects = (board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) => {
+  for (const {boardBlockIndex, spriteBlockIndex} of spriteBoardPositions(board, alignedSprite, startBlockX, startY)) {
+    const blockCollisions = boardBlockIndex === undefined
+      ? alignedSprite.data[spriteBlockIndex]  // sprite block exends beyond the board => every pixel is a collision
+      : alignedSprite.data[spriteBlockIndex] & board.data[boardBlockIndex];
+
+    const spriteBlockWidth = getSpriteBlockWidth(alignedSprite);
+    const spriteY = Math.floor(spriteBlockIndex / spriteBlockWidth);
+
+    if (spriteY + startY < 0) {
+      debugger;
+    }
+
+    if (blockCollisions !== 0) {
+      return true;
+    }
   }
+
+  return false;
 }
 
 const place = (board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) => {
