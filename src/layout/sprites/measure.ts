@@ -5,7 +5,7 @@ export const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConf
   const metrics = ctx.measureText(datum.text);
 
   // Find the size of the text bounding box.
-  // Using the actual[…] metrics allows us to build a more compact sprite map than would be possible otherwise.
+  // Using the actual[…] metrics allows us to arrange.ts a more compact sprite map than would be possible otherwise.
   const textWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
   const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
