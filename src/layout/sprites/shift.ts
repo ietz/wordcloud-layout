@@ -1,5 +1,6 @@
 import { getSpriteBlockWidth, Sprite } from './compute';
 import { BLOCK_SIZE, range } from '../../util';
+import { SpriteData } from './canvas';
 
 export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
   if (offset < 0) {
@@ -16,14 +17,37 @@ export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
   const availableSpace = blockWidth * BLOCK_SIZE - sprite.size[0];
   const outputBlockWidth = offset <= availableSpace ? blockWidth : blockWidth + 1;
 
-  const newData = range(sprite.size[1]).flatMap(y =>
-    range(outputBlockWidth).map(x => {
-      const originalIndex = y * blockWidth + x;
-      const left = x > 0 ? sprite.data[originalIndex - 1] << (BLOCK_SIZE - offset) : 0;
-      const current = x < blockWidth ? rightShiftBlock(sprite.data[originalIndex], offset) : 0;
-      return left | current;
-    })
-  )
+  function* dataGenerator() {
+    for (const y of range(sprite.size[1])) {
+      for (const x of range(outputBlockWidth)) {
+        const originalIndex = y * blockWidth + x;
+        const left = x > 0 ? sprite.data[originalIndex - 1] << (BLOCK_SIZE - offset) : 0;
+        const current = x < blockWidth ? rightShiftBlock(sprite.data[originalIndex], offset) : 0;
+        yield left | current;
+      }
+    }
+  }
+
+  const gen = dataGenerator();
+
+  const lazyData: SpriteData = new Proxy([] as number[], {
+    get(target, property) {
+      if (property === 'length') {
+        return sprite.size[1] * outputBlockWidth;
+      }
+
+      while (!(property in target)) {
+        const next = gen.next();
+        if (next.done) {
+          throw Error('Exhausted generator');
+        }
+
+        target.push(next.value);
+      }
+
+      return target[property as any];
+    }
+  })
 
   return {
     size: [
@@ -34,7 +58,7 @@ export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
       x: sprite.textBaselineOffset.x - offset,
       y: sprite.textBaselineOffset.y,
     },
-    data: newData,
+    data: lazyData,
   }
 }
 
