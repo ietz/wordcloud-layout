@@ -2,10 +2,29 @@ import { Size } from '../../config/model';
 import { Position } from '../../common';
 import { Sprite } from '../sprites';
 
-export const suggestPosition = (size: Size): Position => {
+export function* suggestPositions({boardSize, sprite}: {boardSize: Size, sprite: Sprite}) {
+  const center = {x: 0.5 * boardSize[0], y: 0.5 * boardSize[1]};
+
+  const xStrechFactor = boardSize[0] / boardSize[1];
+  const maxSpiralDistanceFromCenter = Math.max(
+    center.x * xStrechFactor,  // to left border
+    (boardSize[0] - center.x) * xStrechFactor,  // to right border
+    center.y, // to top
+    boardSize[1] - center.y, // to bottom
+  )
+
+  for (let spiralDistanceFromCenter = 0; spiralDistanceFromCenter < maxSpiralDistanceFromCenter; spiralDistanceFromCenter += 0.1) {
+    yield textPositionFromCenter({
+      x: center.x + xStrechFactor * spiralDistanceFromCenter * Math.cos(spiralDistanceFromCenter),
+      y: center.y + spiralDistanceFromCenter * Math.sin(spiralDistanceFromCenter),
+    }, sprite)
+  }
+}
+
+const textPositionFromCenter = (center: Position, sprite: Sprite): Position => {
   return {
-    x: Math.floor(Math.random() * size[0]),
-    y: Math.floor(Math.random() * size[1])
+    x: center.x - sprite.size[0] / 2 + sprite.textBaselineOffset.x,
+    y: center.y - sprite.size[1] / 2 + sprite.textBaselineOffset.y,
   }
 }
 
