@@ -19,6 +19,10 @@ export const buildBoard = (size: Size): Board => {
   }
 }
 
+export const extendBoard = (board: Board, factor: number): Board => {
+  return board;
+}
+
 export const intersects = (board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) => {
   for (const {boardBlockIndex, spriteBlockIndex} of spriteBoardPositions(board, alignedSprite, startBlockX, startY)) {
     const blockCollisions = boardBlockIndex === undefined

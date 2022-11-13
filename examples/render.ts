@@ -1,11 +1,12 @@
 import { Size } from './models';
 import { wordcloud, Wordcloud } from '../src/config/builder';
 import { Position } from '../src/common';
+import { Word } from "../src/config/model";
 
 export function render(size: Size) {
-  const data = [
-    {text: 'Hello', size: 30, rotation: 0.2},
-    {text: 'Word', size: 50},
+  const data: Word[] = [
+    {text: 'Hello', size: 30, rotation: 0.2, required: true},
+    {text: 'Word', size: 50, required: true},
     {text: 'where', size: 8, rotation: -1.2},
     {text: 'are', size: 38},
     {text: 'you', size: 21},

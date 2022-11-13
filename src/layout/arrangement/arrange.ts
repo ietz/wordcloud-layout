@@ -2,19 +2,33 @@ import { Size, WordcloudConfig } from '../../config/model';
 import { rightShiftSprite, Sprite } from '../sprites';
 import { Position } from '../../common';
 import { BLOCK_SIZE, fullArray, range } from '../../util';
-import { Board, buildBoard, intersects, place } from './board';
+import { Board, buildBoard, extendBoard, intersects, place } from './board';
 import { alignPosition, suggestPositions } from './position';
 import { showBoard } from './debugging';
 
 export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position | undefined)[] => {
-  const board = buildBoard(config.size);
+  let board = buildBoard(config.size);
 
   const areas = sprites.map(sprite => sprite.size[0] * sprite.size[1]);
   const order = range(sprites.length).sort((a, b) => areas[b] - areas[a]);
 
   const positions = fullArray<Position | undefined>(sprites.length, undefined);
   for (const i of order) {
-    positions[i] = placeSprite(board, sprites[i]);
+    const sprite = sprites[i];
+    const word = config.data[i];
+
+    positions[i] = placeSprite(board, sprite);
+
+    if (word.required) {
+      for (let extensionTrials = 5; positions[i] === undefined && extensionTrials > 0; extensionTrials--) {
+        board = extendBoard(board, 1.2);
+        positions[i] = placeSprite(board, sprite);
+      }
+
+      if (positions[i] === undefined) {
+        console.warn('Could not place word after extending the board');
+      }
+    }
   }
 
   showBoard(board);

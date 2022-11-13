@@ -11,4 +11,5 @@ export interface Word {
   text: string;
   size: number;
   rotation?: number;
+  required?: boolean;
 }
