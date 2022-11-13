@@ -31,8 +31,6 @@ export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMea
     const position = positions[i];
 
     const crop = cropSpriteMapBounds(imageData, measurement, position);
-    console.log(crop);
-
     const spriteData: number[] = [];
 
     const yEnd = position.y + measurement.boxHeight - crop.bottom;
@@ -100,7 +98,7 @@ const isImageDataAreaEmpty = (imageData: ImageData, position: Position, size: Si
   for (let y = position.y; y < position.y + size[1]; y++) {
     for (let x = position.x; x < position.x + size[0]; x++) {
       const pixelStart = (x + y * imageData.width) * 4;
-      const alphaValue = pixelStart + 3;
+      const alphaValue = imageData.data[pixelStart + 3];
       if (alphaValue > 0) {
         return false;
       }
