@@ -1,7 +1,6 @@
 import { Size } from '../../config/model';
 import { BLOCK_SIZE, fullArray } from '../../util';
 import { Sprite } from '../sprites';
-import { getSpriteBlockWidth } from '../sprites/compute';
 
 export interface Board {
   data: number[];
@@ -47,10 +46,9 @@ export const place = (board: Board, alignedSprite: Sprite, startBlockX: number, 
 
 function* spriteBoardPositions(board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) {
   const boardHeight = board.data.length / board.blockWidth;
-  const spriteBlockWidth = getSpriteBlockWidth(alignedSprite);
 
   for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
-    for (let spriteBlockX = 0; spriteBlockX < spriteBlockWidth; spriteBlockX++) {
+    for (let spriteBlockX = 0; spriteBlockX < alignedSprite.blockWidth; spriteBlockX++) {
       const boardY = startY + spriteY;
       const boardBlockX = startBlockX + spriteBlockX;
 
@@ -58,7 +56,7 @@ function* spriteBoardPositions(board: Board, alignedSprite: Sprite, startBlockX:
 
       yield {
         boardBlockIndex: isValidBoardPosition ? boardY * board.blockWidth + boardBlockX : undefined,
-        spriteBlockIndex: spriteY * spriteBlockWidth + spriteBlockX,
+        spriteBlockIndex: spriteY * alignedSprite.blockWidth + spriteBlockX,
       }
     }
   }

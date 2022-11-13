@@ -3,6 +3,7 @@ import { Size } from "../../config/model";
 
 export class Sprite {
     size: Size;
+    blockWidth: number;
 
     constructor(
         public data: SpriteData,
@@ -15,5 +16,6 @@ export class Sprite {
         }
 
         this.size = [width, height];
+        this.blockWidth = data.length / height;
     }
 }

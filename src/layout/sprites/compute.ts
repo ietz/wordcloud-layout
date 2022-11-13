@@ -17,5 +17,3 @@ export const computeSprites = (config: WordcloudConfig): Sprite[] => {
   drawTexts(ctx, config.data, measurements, positions);
   return readSprites(ctx, measurements, positions);
 }
-
-export const getSpriteBlockWidth = (sprite: Sprite) => sprite.data.length / sprite.size[1];

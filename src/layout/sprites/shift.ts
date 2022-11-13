@@ -1,4 +1,3 @@
-import { getSpriteBlockWidth } from './compute';
 import { BLOCK_SIZE, range } from '../../util';
 import { SpriteData } from './canvas';
 import { Sprite } from './sprite';
@@ -14,16 +13,15 @@ export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
     return sprite;
   }
 
-  const blockWidth = getSpriteBlockWidth(sprite);
-  const availableSpace = blockWidth * BLOCK_SIZE - sprite.size[0];
-  const outputBlockWidth = offset <= availableSpace ? blockWidth : blockWidth + 1;
+  const availableSpace = sprite.blockWidth * BLOCK_SIZE - sprite.size[0];
+  const outputBlockWidth = offset <= availableSpace ? sprite.blockWidth : sprite.blockWidth + 1;
 
   function* dataGenerator() {
     for (const y of range(sprite.size[1])) {
       for (const x of range(outputBlockWidth)) {
-        const originalIndex = y * blockWidth + x;
+        const originalIndex = y * sprite.blockWidth + x;
         const left = x > 0 ? sprite.data[originalIndex - 1] << (BLOCK_SIZE - offset) : 0;
-        const current = x < blockWidth ? rightShiftBlock(sprite.data[originalIndex], offset) : 0;
+        const current = x < sprite.blockWidth ? rightShiftBlock(sprite.data[originalIndex], offset) : 0;
         yield left | current;
       }
     }
