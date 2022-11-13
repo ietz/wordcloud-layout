@@ -39,18 +39,27 @@ export class Board extends Sprite {
     }
   }
 
-  * spriteBoardPositions(alignedSprite: TextSprite, startBlockX: number, startY: number) {
-    for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
-      for (let spriteBlockX = 0; spriteBlockX < alignedSprite.blockWidth; spriteBlockX++) {
-        const boardY = startY + spriteY;
-        const boardBlockX = startBlockX + spriteBlockX;
+  spriteBoardPositions = (alignedSprite: TextSprite, startBlockX: number, startY: number) => {
+    const board = this;
 
-        const isValidBoardPosition = 0 <= boardY && boardY < this.size[1] && 0 <= boardBlockX && boardBlockX < this.blockWidth
+    return {
+      [Symbol.iterator]: () => {
+        function* generator() {
+          for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
+            for (let spriteBlockX = 0; spriteBlockX < alignedSprite.blockWidth; spriteBlockX++) {
+              const boardY = startY + spriteY;
+              const boardBlockX = startBlockX + spriteBlockX;
 
-        yield {
-          boardBlockIndex: isValidBoardPosition ? boardY * this.blockWidth + boardBlockX : undefined,
-          spriteBlockIndex: spriteY * alignedSprite.blockWidth + spriteBlockX,
+              const isValidBoardPosition = 0 <= boardY && boardY < board.size[1] && 0 <= boardBlockX && boardBlockX < board.blockWidth
+
+              yield {
+                boardBlockIndex: isValidBoardPosition ? boardY * board.blockWidth + boardBlockX : undefined,
+                spriteBlockIndex: spriteY * alignedSprite.blockWidth + spriteBlockX,
+              }
+            }
+          }
         }
+        return generator();
       }
     }
   }
