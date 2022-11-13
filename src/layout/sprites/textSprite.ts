@@ -9,7 +9,6 @@ export class Sprite {
     constructor(
         public data: SpriteData,
         width: number,
-        public textBaselineOffset: {x: number, y: number},
     ) {
         this.blockWidth = Math.ceil(width / BLOCK_SIZE);
         const height = data.length / this.blockWidth;
@@ -21,6 +20,13 @@ export class Sprite {
     }
 
     rightShift = (offset: number): Sprite => {
+        return new Sprite(
+          this.rightShiftSpriteData(offset),
+          this.size[0] + offset,
+        )
+    }
+
+    rightShiftSpriteData = (offset: number): SpriteData => {
         const sprite = this;
 
         if (offset < 0) {
@@ -30,7 +36,7 @@ export class Sprite {
         }
 
         if (offset === 0) {
-            return sprite;
+            return sprite.data;
         }
 
         const availableSpace = sprite.blockWidth * BLOCK_SIZE - sprite.size[0];
@@ -49,7 +55,7 @@ export class Sprite {
 
         const gen = dataGenerator();
 
-        const lazyData: SpriteData = new Proxy([] as number[], {
+        return new Proxy([] as number[], {
             get(target, property) {
                 if (property === 'length') {
                     return sprite.size[1] * outputBlockWidth;
@@ -67,16 +73,28 @@ export class Sprite {
                 return target[property as any];
             }
         })
+    }
+}
 
-        return new Sprite(
-          lazyData,
-          sprite.size[0] + offset,
+export class TextSprite extends Sprite {
+    constructor(
+      data: SpriteData,
+      width: number,
+      public textBaselineOffset: {x: number, y: number},
+    ) {
+        super(data, width);
+    }
+
+    rightShift = (offset: number): TextSprite => {
+        return new TextSprite(
+          this.rightShiftSpriteData(offset),
+          this.size[0] + offset,
           {
-              x: sprite.textBaselineOffset.x - offset,
-              y: sprite.textBaselineOffset.y,
+              x: this.textBaselineOffset.x - offset,
+              y: this.textBaselineOffset.y,
           }
         )
-    }
+    };
 }
 
 const rightShiftBlock = (block: number, offset: number): number => {

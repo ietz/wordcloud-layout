@@ -1,8 +1,8 @@
 import { Size } from '../../config/model';
 import { Position } from '../../common';
-import { Sprite } from '../sprites';
+import { TextSprite } from '../sprites';
 
-export function* suggestPositions({boardSize, sprite}: {boardSize: Size, sprite: Sprite}) {
+export function* suggestPositions({boardSize, sprite}: {boardSize: Size, sprite: TextSprite}) {
   const center = {x: 0.5 * boardSize[0], y: 0.5 * boardSize[1]};
 
   const xStretchFactor = boardSize[0] / boardSize[1];
@@ -21,14 +21,14 @@ export function* suggestPositions({boardSize, sprite}: {boardSize: Size, sprite:
   }
 }
 
-const textPositionFromCenter = (center: Position, sprite: Sprite): Position => {
+const textPositionFromCenter = (center: Position, sprite: TextSprite): Position => {
   return {
     x: center.x - sprite.size[0] / 2 + sprite.textBaselineOffset.x,
     y: center.y - sprite.size[1] / 2 + sprite.textBaselineOffset.y,
   }
 }
 
-export const alignPosition = (suggestedTextPosition: Position, sprite: Sprite): {textPosition: Position, spritePosition: Position} => {
+export const alignPosition = (suggestedTextPosition: Position, sprite: TextSprite): {textPosition: Position, spritePosition: Position} => {
   // The sprite can only be placed at integer grid positions such as [10, 15] but not at [10.2, 15.7].
   // This function shifts the suggested text position slightly such that the sprite can be placed at an integer grid position.
   //

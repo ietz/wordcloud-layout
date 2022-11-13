@@ -1,6 +1,6 @@
 import { Size } from '../../config/model';
 import { BLOCK_SIZE, fullArray } from '../../util';
-import { Sprite } from '../sprites';
+import { TextSprite } from '../sprites';
 
 export interface Board {
   data: number[];
@@ -22,7 +22,7 @@ export const extendBoard = (board: Board, factor: number): Board => {
   return board;
 }
 
-export const intersects = (board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) => {
+export const intersects = (board: Board, alignedSprite: TextSprite, startBlockX: number, startY: number) => {
   for (const {boardBlockIndex, spriteBlockIndex} of spriteBoardPositions(board, alignedSprite, startBlockX, startY)) {
     const blockCollisions = boardBlockIndex === undefined
       ? alignedSprite.data[spriteBlockIndex]  // sprite block exends beyond the board => every pixel is a collision
@@ -36,7 +36,7 @@ export const intersects = (board: Board, alignedSprite: Sprite, startBlockX: num
   return false;
 }
 
-export const place = (board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) => {
+export const place = (board: Board, alignedSprite: TextSprite, startBlockX: number, startY: number) => {
   for (const {boardBlockIndex, spriteBlockIndex} of spriteBoardPositions(board, alignedSprite, startBlockX, startY)) {
     if (boardBlockIndex !== undefined) {
       board.data[boardBlockIndex] |= alignedSprite.data[spriteBlockIndex];
@@ -44,7 +44,7 @@ export const place = (board: Board, alignedSprite: Sprite, startBlockX: number, 
   }
 }
 
-function* spriteBoardPositions(board: Board, alignedSprite: Sprite, startBlockX: number, startY: number) {
+function* spriteBoardPositions(board: Board, alignedSprite: TextSprite, startBlockX: number, startY: number) {
   const boardHeight = board.data.length / board.blockWidth;
 
   for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {

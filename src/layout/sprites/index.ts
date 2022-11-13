@@ -1,2 +1,2 @@
-export {Sprite} from './sprite';
+export {TextSprite} from './textSprite';
 export {computeSprites} from './compute';
