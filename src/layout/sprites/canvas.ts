@@ -1,7 +1,8 @@
-import { Word } from '../../config/model';
+import { Size, Word } from '../../config/model';
 import { TextMeasurement } from './measure';
 import { Position } from '../../common';
-import { BLOCK_SIZE } from '../../util';
+import { BLOCK_SIZE, range } from '../../util';
+import { Sprite } from './compute';
 
 export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measurements: TextMeasurement[], positions: Position[]) => {
   for (let i = 0; i < data.length; i++) {
@@ -21,18 +22,23 @@ export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measureme
   }
 }
 
-export const readSpriteData = (ctx: CanvasRenderingContext2D, measurements: TextMeasurement[], positions: Position[]): SpriteData[] => {
+export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMeasurement[], positions: Position[]): Sprite[] => {
   const imageData = ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height);
-  const sprites: SpriteData[] = [];
+  const sprites: Sprite[] = [];
 
   for (let i = 0; i < measurements.length; i++) {
-    const sprite: number[] = [];
-    sprites.push(sprite);
+    const measurement = measurements[i];
+    const position = positions[i];
 
-    const yEnd = positions[i].y + measurements[i].boxHeight;
-    const xEnd = positions[i].x + measurements[i].boxWidth;
-    for (let y = positions[i].y; y < yEnd; y++) {
-      for (let blockX = positions[i].x; blockX < xEnd; blockX += BLOCK_SIZE) {
+    const crop = cropSpriteMapBounds(imageData, measurement, position);
+    console.log(crop);
+
+    const spriteData: number[] = [];
+
+    const yEnd = position.y + measurement.boxHeight - crop.bottom;
+    const xEnd = position.x + measurement.boxWidth - crop.right;
+    for (let y = position.y + crop.top; y < yEnd; y++) {
+      for (let blockX = position.x + crop.left; blockX < xEnd; blockX += BLOCK_SIZE) {
         let block = 0;
         for (let blockPixelIndex = 0; blockPixelIndex < BLOCK_SIZE && blockX + blockPixelIndex < xEnd; blockPixelIndex++) {
           const pixelIndex = y * imageData.width + blockX + blockPixelIndex;
@@ -42,12 +48,66 @@ export const readSpriteData = (ctx: CanvasRenderingContext2D, measurements: Text
           }
         }
 
-        sprite.push(block);
+        spriteData.push(block);
+      }
+    }
+
+    sprites.push({
+      data: spriteData,
+      size: [
+        measurement.boxWidth - crop.left - crop.right,
+        measurement.boxHeight - crop.top - crop.bottom,
+      ],
+      textBaselineOffset: {
+        x: measurement.textX - crop.left,
+        y: measurement.textY - crop.top,
+      }
+    });
+
+  }
+
+  return sprites;
+}
+
+const cropSpriteMapBounds = (imageData: ImageData, measurement: TextMeasurement, position: Position) => {
+  const isRowEmpty = (y: number) => isImageDataAreaEmpty(
+    imageData,
+    {x: position.x, y},
+    [measurement.boxWidth, 1],
+  )
+
+  const cropTop = range(measurement.boxHeight).find(topRow => !isRowEmpty(position.y + topRow));
+  if (cropTop === undefined) {
+    console.warn('Sprite area is empty');
+    return {top: 0, bottom: measurement.boxHeight, left: 0, right: measurement.boxWidth};
+  }
+
+  const cropBottom = range(measurement.boxHeight).find(bottomRow => !isRowEmpty(position.y + measurement.boxHeight - 1 - bottomRow))!;
+
+  const isColumnEmpty = (x: number) => isImageDataAreaEmpty(
+    imageData,
+    {x, y: position.y + cropTop},
+    [1, measurement.boxHeight - cropTop - cropBottom],
+  );
+
+  const cropLeft = range(measurement.boxWidth).find(leftColumn => !isColumnEmpty(position.x + leftColumn))!;
+  const cropRight = range(measurement.boxWidth).find(rightColumn => !isColumnEmpty(position.x + measurement.boxWidth - 1 - rightColumn))!;
+
+  return {top: cropTop, bottom: cropBottom, left: cropLeft, right: cropRight};
+}
+
+const isImageDataAreaEmpty = (imageData: ImageData, position: Position, size: Size) => {
+  for (let y = position.y; y < position.y + size[1]; y++) {
+    for (let x = position.x; x < position.x + size[0]; x++) {
+      const pixelStart = (x + y * imageData.width) * 4;
+      const alphaValue = pixelStart + 3;
+      if (alphaValue > 0) {
+        return false;
       }
     }
   }
 
-  return sprites;
+  return true;
 }
 
 export type SpriteData = {
