@@ -37,12 +37,10 @@ export const arrange = (config: WordcloudConfig, sprites: TextSprite[]): (Positi
 }
 
 const placeSprite = (board: Board, sprite: TextSprite): Position | undefined => {
-  const boardSize: Size = [board.width, board.data.length / board.blockWidth];
-
-  for (const suggestedTextPosition of suggestPositions({boardSize, sprite})) {
+  for (const suggestedTextPosition of suggestPositions({boardSize: board.size, sprite})) {
     const {textPosition, spritePosition} = alignPosition(suggestedTextPosition, sprite);
 
-    if (!isInsideBoard(boardSize, sprite.size, spritePosition)) {
+    if (!isInsideBoard(board.size, sprite.size, spritePosition)) {
       continue;
     }
 

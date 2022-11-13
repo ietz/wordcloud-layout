@@ -1,21 +1,18 @@
 import { Size } from '../../config/model';
 import { BLOCK_SIZE, fullArray } from '../../util';
 import { TextSprite } from '../sprites';
+import { Sprite } from '../sprites/textSprite';
 
-export interface Board {
-  data: number[];
-  width: number;
-  blockWidth: number;
+export class Board extends Sprite {
 }
 
 export const buildBoard = (size: Size): Board => {
   const blockWidth = Math.ceil(size[0] / BLOCK_SIZE);
 
-  return {
-    blockWidth,
-    width: size[0],
-    data: fullArray(blockWidth * size[1], 0),
-  }
+  return new Board(
+    fullArray(blockWidth * size[1], 0),
+    size[0],
+  )
 }
 
 export const extendBoard = (board: Board, factor: number): Board => {
@@ -45,14 +42,12 @@ export const place = (board: Board, alignedSprite: TextSprite, startBlockX: numb
 }
 
 function* spriteBoardPositions(board: Board, alignedSprite: TextSprite, startBlockX: number, startY: number) {
-  const boardHeight = board.data.length / board.blockWidth;
-
   for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
     for (let spriteBlockX = 0; spriteBlockX < alignedSprite.blockWidth; spriteBlockX++) {
       const boardY = startY + spriteY;
       const boardBlockX = startBlockX + spriteBlockX;
 
-      const isValidBoardPosition = 0 <= boardY && boardY < boardHeight && 0 <= boardBlockX && boardBlockX < board.blockWidth
+      const isValidBoardPosition = 0 <= boardY && boardY < board.size[1] && 0 <= boardBlockX && boardBlockX < board.blockWidth
 
       yield {
         boardBlockIndex: isValidBoardPosition ? boardY * board.blockWidth + boardBlockX : undefined,
