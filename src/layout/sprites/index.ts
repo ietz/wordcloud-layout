@@ -1,2 +1,2 @@
-export {TextSprite} from './textSprite';
+export {TextSprite, rightShiftBlock} from './textSprite';
 export {computeSprites} from './compute';

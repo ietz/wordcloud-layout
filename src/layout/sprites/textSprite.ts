@@ -21,12 +21,12 @@ export class Sprite {
 
     rightShift = (offset: number): Sprite => {
         return new Sprite(
-          this.rightShiftSpriteData(offset),
+          this.lazyRightShiftData(offset),
           this.size[0] + offset,
         )
     }
 
-    rightShiftSpriteData = (offset: number): SpriteData => {
+    lazyRightShiftData = (offset: number): SpriteData => {
         const sprite = this;
 
         if (offset < 0) {
@@ -87,7 +87,7 @@ export class TextSprite extends Sprite {
 
     rightShift = (offset: number): TextSprite => {
         return new TextSprite(
-          this.rightShiftSpriteData(offset),
+          this.lazyRightShiftData(offset),
           this.size[0] + offset,
           {
               x: this.textBaselineOffset.x - offset,
@@ -97,7 +97,7 @@ export class TextSprite extends Sprite {
     };
 }
 
-const rightShiftBlock = (block: number, offset: number): number => {
+export const rightShiftBlock = (block: number, offset: number): number => {
     if (offset === 0) {
         return offset;
     } else if (block >= 0) {

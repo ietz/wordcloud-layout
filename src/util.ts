@@ -3,7 +3,7 @@ export const BLOCK_SIZE = 32;
 
 export const range = (end: number) => Array.from({length: end}, (_, i) => i);
 
-export const fullArray = <T>(length: number, value: T) => {
+export const fullArray = <T>(length: number, value: T): T[] => {
     const array = new Array(length);
     for (let i = 0; i < length; i++) {
         array[i] = value;

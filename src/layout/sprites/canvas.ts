@@ -1,6 +1,6 @@
 import { Size, Word } from '../../config/model';
 import { TextMeasurement } from './measure';
-import { Position } from '../../common';
+import { Padding, Position } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
 import { TextSprite } from './textSprite';
 
@@ -63,7 +63,7 @@ export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMea
   return sprites;
 }
 
-const cropSpriteMapBounds = (imageData: ImageData, measurement: TextMeasurement, position: Position) => {
+const cropSpriteMapBounds = (imageData: ImageData, measurement: TextMeasurement, position: Position): Padding => {
   const isRowEmpty = (y: number) => isImageDataAreaEmpty(
     imageData,
     {x: position.x, y},

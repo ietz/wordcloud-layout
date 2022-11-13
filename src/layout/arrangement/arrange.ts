@@ -12,7 +12,7 @@ export const arrange = (config: WordcloudConfig, sprites: TextSprite[]): (Positi
   const areas = sprites.map(sprite => sprite.size[0] * sprite.size[1]);
   const order = range(sprites.length).sort((a, b) => areas[b] - areas[a]);
 
-  const positions = fullArray<Position | undefined>(sprites.length, undefined);
+  let positions = fullArray<Position | undefined>(sprites.length, undefined);
   for (const i of order) {
     const sprite = sprites[i];
     const word = config.data[i];
@@ -21,7 +21,9 @@ export const arrange = (config: WordcloudConfig, sprites: TextSprite[]): (Positi
 
     if (word.required) {
       for (let extensionTrials = 5; positions[i] === undefined && extensionTrials > 0; extensionTrials--) {
-        board = board.extend(1.2);
+        const padding = board.getPaddingForResize(1.2);
+        board = board.pad(padding);
+        positions = positions.map(position => position ? ({x: position.x + padding.left, y: position.y + padding.top}) : undefined);
         positions[i] = placeSprite(board, sprite);
       }
 

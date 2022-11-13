@@ -1,7 +1,9 @@
 import { Size } from '../../config/model';
-import { BLOCK_SIZE, fullArray } from '../../util';
-import { TextSprite } from '../sprites';
+import { BLOCK_SIZE, fullArray, range } from '../../util';
+import { rightShiftBlock, TextSprite } from '../sprites';
 import { Sprite } from '../sprites/textSprite';
+import { SpriteData } from '../sprites/canvas';
+import { Padding } from '../../common';
 
 export class Board extends Sprite {
   static empty = (size: Size): Board => {
@@ -11,10 +13,6 @@ export class Board extends Sprite {
       fullArray(blockWidth * size[1], 0),
       size[0],
     )
-  }
-
-  extend = (factor: number): Board => {
-    return this;
   }
 
   intersects = (alignedSprite: TextSprite, startBlockX: number, startY: number) => {
@@ -62,5 +60,70 @@ export class Board extends Sprite {
         return generator();
       }
     }
+  }
+
+  getPaddingForResize = (factor: number): Padding => {
+    const [x, y] = this.size.map(value => Math.round(value * (factor - 1)));
+    const [top, left] = [x, y].map(v => Math.floor(v / 2));
+    return {top, bottom: y - top, left, right: y - left}
+  }
+
+  pad = (padding: Padding): Board => {
+    const outputSize: Size = [
+      this.size[0] + padding.left + padding.right,
+      this.size[1] + padding.top + padding.bottom,
+    ];
+    const outputBlockWidth = Math.ceil(outputSize[0] / BLOCK_SIZE);
+
+    const paddingBlocksLeft = Math.floor(padding.left / BLOCK_SIZE);
+    const withinBlockPaddingLeft = padding.left % BLOCK_SIZE;
+
+    const shiftedData = this.rightShiftData(withinBlockPaddingLeft);
+    const shiftedBlockWidth = shiftedData.length / this.size[1];
+
+    const outputData: number[] = [];
+    for (let y = 0; y < outputSize[1]; y++) {
+      for (let blockX = 0; blockX < outputBlockWidth; blockX++) {
+        const shiftedBlockX = blockX - paddingBlocksLeft;
+        const shiftedY = y - padding.top;
+
+        if (shiftedBlockX >= 0 && shiftedY >= 0 && shiftedBlockX < shiftedBlockWidth && shiftedY < this.size[1]) {
+          // is inside the area to be copied
+          outputData.push(shiftedData[shiftedBlockX + shiftedY * shiftedBlockWidth])
+        } else {
+          // is in the zero-padding area
+          outputData.push(0);
+        }
+      }
+    }
+
+    return new Board(outputData, outputSize[0]);
+  }
+
+  rightShiftData = (offset: number): SpriteData => {
+    if (offset < 0) {
+      throw Error('Tried to shift the board to the left');
+    } else if (offset >= BLOCK_SIZE) {
+      throw Error('Tried to shift board a complete block or more');
+    }
+
+    if (offset === 0) {
+      return this.data;
+    }
+
+    const availableSpace = this.blockWidth * BLOCK_SIZE - this.size[0];
+    const outputBlockWidth = offset <= availableSpace ? this.blockWidth : this.blockWidth + 1;
+
+    const data: number[] = [];
+    for (const y of range(this.size[1])) {
+      for (const x of range(outputBlockWidth)) {
+        const originalIndex = y * this.blockWidth + x;
+        const left = x > 0 ? this.data[originalIndex - 1] << (BLOCK_SIZE - offset) : 0;
+        const current = x < this.blockWidth ? rightShiftBlock(this.data[originalIndex], offset) : 0;
+        data.push(left | current);
+      }
+    }
+
+    return data;
   }
 }
