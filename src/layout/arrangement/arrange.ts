@@ -15,11 +15,16 @@ export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position |
 
   const positions: (Position | undefined)[] = Array.from({length: sprites.length}, () => undefined);
   for (const i of order) {
-    for (const suggestedTextPosition of suggestPositions({boardSize, sprite: sprites[i]})) {
-      const {textPosition, spritePosition} = alignPosition(suggestedTextPosition, sprites[i]);
+    const sprite = sprites[i];
+    for (const suggestedTextPosition of suggestPositions({boardSize, sprite})) {
+      const {textPosition, spritePosition} = alignPosition(suggestedTextPosition, sprite);
+
+      if (!isInsideBoard(boardSize, sprite.size, spritePosition)) {
+        continue;
+      }
 
       const startBlockX = Math.floor(spritePosition.x / BLOCK_SIZE);
-      const alignedSprite = rightShiftSprite(sprites[i], spritePosition.x - startBlockX * BLOCK_SIZE);
+      const alignedSprite = rightShiftSprite(sprite, spritePosition.x - startBlockX * BLOCK_SIZE);
 
       if (intersects(board, alignedSprite, startBlockX, spritePosition.y)) {
         continue;
@@ -35,4 +40,13 @@ export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position |
   showBoard(board);
 
   return positions;
+}
+
+export const isInsideBoard = (boardSize: Size, spriteSize: Size, spritePosition: Position) => {
+  return (
+      spritePosition.x >= 0 &&
+      spritePosition.y >= 0 &&
+      spritePosition.x + spriteSize[0] <= boardSize[0] &&
+      spritePosition.y + spriteSize[1] <= boardSize[1]
+  )
 }
