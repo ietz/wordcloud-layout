@@ -5,17 +5,17 @@ import { Sprite } from '../sprites';
 export function* suggestPositions({boardSize, sprite}: {boardSize: Size, sprite: Sprite}) {
   const center = {x: 0.5 * boardSize[0], y: 0.5 * boardSize[1]};
 
-  const xStrechFactor = boardSize[0] / boardSize[1];
+  const xStretchFactor = boardSize[0] / boardSize[1];
   const maxSpiralDistanceFromCenter = Math.max(
-    center.x * xStrechFactor,  // to left border
-    (boardSize[0] - center.x) * xStrechFactor,  // to right border
+    center.x * xStretchFactor,  // to left border
+    (boardSize[0] - center.x) * xStretchFactor,  // to right border
     center.y, // to top
     boardSize[1] - center.y, // to bottom
   )
 
   for (let spiralDistanceFromCenter = 0; spiralDistanceFromCenter < maxSpiralDistanceFromCenter; spiralDistanceFromCenter += 0.1) {
     yield textPositionFromCenter({
-      x: center.x + xStrechFactor * spiralDistanceFromCenter * Math.cos(spiralDistanceFromCenter),
+      x: center.x + xStretchFactor * spiralDistanceFromCenter * Math.cos(spiralDistanceFromCenter),
       y: center.y + spiralDistanceFromCenter * Math.sin(spiralDistanceFromCenter),
     }, sprite)
   }
