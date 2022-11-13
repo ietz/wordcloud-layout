@@ -11,19 +11,11 @@ export interface Board {
 
 export const buildBoard = (size: Size): Board => {
   const blockWidth = Math.ceil(size[0] / BLOCK_SIZE);
-  const rightBorderOverflowCells = blockWidth * BLOCK_SIZE - size[0];
-  const rightBorderMask = (1 << rightBorderOverflowCells) - 1;
 
   return {
     blockWidth,
     width: size[0],
-    data: Array.from(
-      {length: blockWidth * size[1]},
-      (_, blockIndex) => {
-        const isRightBorder = (blockIndex % blockWidth) == blockWidth - 1;
-        return isRightBorder ? rightBorderMask : 0;
-      }
-    )
+    data: Array.from({length: blockWidth * size[1]}, () => 0)
   }
 }
 
