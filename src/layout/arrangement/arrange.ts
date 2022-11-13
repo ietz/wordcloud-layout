@@ -1,7 +1,7 @@
 import { Size, WordcloudConfig } from '../../config/model';
 import { rightShiftSprite, Sprite } from '../sprites';
 import { Position } from '../../common';
-import { BLOCK_SIZE, range } from '../../util';
+import { BLOCK_SIZE, fullArray, range } from '../../util';
 import { Board, buildBoard, intersects, place } from './board';
 import { alignPosition, suggestPositions } from './position';
 import { showBoard } from './debugging';
@@ -12,7 +12,7 @@ export const arrange = (config: WordcloudConfig, sprites: Sprite[]): (Position |
   const areas = sprites.map(sprite => sprite.size[0] * sprite.size[1]);
   const order = range(sprites.length).sort((a, b) => areas[b] - areas[a]);
 
-  const positions: (Position | undefined)[] = Array.from({length: sprites.length}, () => undefined);
+  const positions = fullArray<Position | undefined>(sprites.length, undefined);
   for (const i of order) {
     positions[i] = placeSprite(board, sprites[i]);
   }

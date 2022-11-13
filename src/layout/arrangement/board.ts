@@ -1,5 +1,5 @@
 import { Size } from '../../config/model';
-import { BLOCK_SIZE } from '../../util';
+import { BLOCK_SIZE, fullArray } from '../../util';
 import { Sprite } from '../sprites';
 import { getSpriteBlockWidth } from '../sprites/compute';
 
@@ -15,7 +15,7 @@ export const buildBoard = (size: Size): Board => {
   return {
     blockWidth,
     width: size[0],
-    data: Array.from({length: blockWidth * size[1]}, () => 0)
+    data: fullArray(blockWidth * size[1], 0),
   }
 }
 

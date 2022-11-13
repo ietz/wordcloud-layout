@@ -1,11 +1,11 @@
 import { Size } from '../../config/model';
-import { range } from '../../util';
+import { fullArray, range } from '../../util';
 import { Position } from '../../common';
 
 export const boxPack = (sizes: Size[]) => {
   // place texts with large box heights first
   const order = range(sizes.length).sort((a, b) => sizes[b][1] - sizes[a][1]);
-  const positions: (Position | undefined)[] = Array.from({length: sizes.length});
+  const positions = fullArray<Position | undefined>(sizes.length, undefined);
   // place first item at top left corner
   positions[order[0]] = {x: 0, y: 0};
 
