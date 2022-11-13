@@ -4,54 +4,53 @@ import { TextSprite } from '../sprites';
 import { Sprite } from '../sprites/textSprite';
 
 export class Board extends Sprite {
-}
+  static empty = (size: Size): Board => {
+    const blockWidth = Math.ceil(size[0] / BLOCK_SIZE);
 
-export const buildBoard = (size: Size): Board => {
-  const blockWidth = Math.ceil(size[0] / BLOCK_SIZE);
+    return new Board(
+      fullArray(blockWidth * size[1], 0),
+      size[0],
+    )
+  }
 
-  return new Board(
-    fullArray(blockWidth * size[1], 0),
-    size[0],
-  )
-}
+  extend = (factor: number): Board => {
+    return this;
+  }
 
-export const extendBoard = (board: Board, factor: number): Board => {
-  return board;
-}
+  intersects = (alignedSprite: TextSprite, startBlockX: number, startY: number) => {
+    for (const {boardBlockIndex, spriteBlockIndex} of this.spriteBoardPositions(alignedSprite, startBlockX, startY)) {
+      const blockCollisions = boardBlockIndex === undefined
+        ? alignedSprite.data[spriteBlockIndex]  // sprite block exends beyond the board => every pixel is a collision
+        : alignedSprite.data[spriteBlockIndex] & this.data[boardBlockIndex];
 
-export const intersects = (board: Board, alignedSprite: TextSprite, startBlockX: number, startY: number) => {
-  for (const {boardBlockIndex, spriteBlockIndex} of spriteBoardPositions(board, alignedSprite, startBlockX, startY)) {
-    const blockCollisions = boardBlockIndex === undefined
-      ? alignedSprite.data[spriteBlockIndex]  // sprite block exends beyond the board => every pixel is a collision
-      : alignedSprite.data[spriteBlockIndex] & board.data[boardBlockIndex];
+      if (blockCollisions !== 0) {
+        return true;
+      }
+    }
 
-    if (blockCollisions !== 0) {
-      return true;
+    return false;
+  }
+
+  place = (alignedSprite: TextSprite, startBlockX: number, startY: number) => {
+    for (const {boardBlockIndex, spriteBlockIndex} of this.spriteBoardPositions(alignedSprite, startBlockX, startY)) {
+      if (boardBlockIndex !== undefined) {
+        this.data[boardBlockIndex] |= alignedSprite.data[spriteBlockIndex];
+      }
     }
   }
 
-  return false;
-}
+  * spriteBoardPositions(alignedSprite: TextSprite, startBlockX: number, startY: number) {
+    for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
+      for (let spriteBlockX = 0; spriteBlockX < alignedSprite.blockWidth; spriteBlockX++) {
+        const boardY = startY + spriteY;
+        const boardBlockX = startBlockX + spriteBlockX;
 
-export const place = (board: Board, alignedSprite: TextSprite, startBlockX: number, startY: number) => {
-  for (const {boardBlockIndex, spriteBlockIndex} of spriteBoardPositions(board, alignedSprite, startBlockX, startY)) {
-    if (boardBlockIndex !== undefined) {
-      board.data[boardBlockIndex] |= alignedSprite.data[spriteBlockIndex];
-    }
-  }
-}
+        const isValidBoardPosition = 0 <= boardY && boardY < this.size[1] && 0 <= boardBlockX && boardBlockX < this.blockWidth
 
-function* spriteBoardPositions(board: Board, alignedSprite: TextSprite, startBlockX: number, startY: number) {
-  for (let spriteY = 0; spriteY < alignedSprite.size[1]; spriteY++) {
-    for (let spriteBlockX = 0; spriteBlockX < alignedSprite.blockWidth; spriteBlockX++) {
-      const boardY = startY + spriteY;
-      const boardBlockX = startBlockX + spriteBlockX;
-
-      const isValidBoardPosition = 0 <= boardY && boardY < board.size[1] && 0 <= boardBlockX && boardBlockX < board.blockWidth
-
-      yield {
-        boardBlockIndex: isValidBoardPosition ? boardY * board.blockWidth + boardBlockX : undefined,
-        spriteBlockIndex: spriteY * alignedSprite.blockWidth + spriteBlockX,
+        yield {
+          boardBlockIndex: isValidBoardPosition ? boardY * this.blockWidth + boardBlockX : undefined,
+          spriteBlockIndex: spriteY * alignedSprite.blockWidth + spriteBlockX,
+        }
       }
     }
   }
