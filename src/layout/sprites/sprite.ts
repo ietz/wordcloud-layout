@@ -11,13 +11,13 @@ export class Sprite {
         width: number,
         public textBaselineOffset: {x: number, y: number},
     ) {
-        const height = data.length / width;
+        this.blockWidth = Math.ceil(width / BLOCK_SIZE);
+        const height = data.length / this.blockWidth;
         if (!Number.isInteger(height)) {
             throw Error('Sprite data is not evenly divisible into rows with the given width');
         }
 
         this.size = [width, height];
-        this.blockWidth = data.length / height;
     }
 
     rightShift = (offset: number): Sprite => {
