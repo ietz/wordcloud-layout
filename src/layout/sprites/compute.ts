@@ -1,7 +1,8 @@
-import { Size, WordcloudConfig } from '../../config/model';
+import { WordcloudConfig } from '../../config/model';
 import { measureText } from './measure';
 import { boxPack } from './pack';
-import { drawTexts, readSprites, SpriteData } from './canvas';
+import { drawTexts, readSprites } from './canvas';
+import { Sprite } from './sprite';
 
 export const computeSprites = (config: WordcloudConfig): Sprite[] => {
   const canvas = document.createElement('canvas');
@@ -15,15 +16,6 @@ export const computeSprites = (config: WordcloudConfig): Sprite[] => {
 
   drawTexts(ctx, config.data, measurements, positions);
   return readSprites(ctx, measurements, positions);
-}
-
-export interface Sprite {
-  data: SpriteData,
-  size: Size,
-  textBaselineOffset: {
-    x: number,
-    y: number,
-  }
 }
 
 export const getSpriteBlockWidth = (sprite: Sprite) => sprite.data.length / sprite.size[1];

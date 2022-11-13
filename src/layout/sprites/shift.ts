@@ -1,6 +1,7 @@
-import { getSpriteBlockWidth, Sprite } from './compute';
+import { getSpriteBlockWidth } from './compute';
 import { BLOCK_SIZE, range } from '../../util';
 import { SpriteData } from './canvas';
+import { Sprite } from './sprite';
 
 export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
   if (offset < 0) {
@@ -49,17 +50,14 @@ export const rightShiftSprite = (sprite: Sprite, offset: number): Sprite => {
     }
   })
 
-  return {
-    size: [
-      sprite.size[0] + offset,
-      sprite.size[1],
-    ],
-    textBaselineOffset: {
+  return new Sprite(
+    lazyData,
+    sprite.size[0] + offset,
+    {
       x: sprite.textBaselineOffset.x - offset,
       y: sprite.textBaselineOffset.y,
-    },
-    data: lazyData,
-  }
+    }
+  )
 }
 
 const rightShiftBlock = (block: number, offset: number): number => {

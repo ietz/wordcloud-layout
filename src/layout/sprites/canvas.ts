@@ -2,7 +2,7 @@ import { Size, Word } from '../../config/model';
 import { TextMeasurement } from './measure';
 import { Position } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
-import { Sprite } from './compute';
+import { Sprite } from './sprite';
 
 export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measurements: TextMeasurement[], positions: Position[]) => {
   for (let i = 0; i < data.length; i++) {
@@ -50,18 +50,14 @@ export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMea
       }
     }
 
-    sprites.push({
-      data: spriteData,
-      size: [
-        measurement.boxWidth - crop.left - crop.right,
-        measurement.boxHeight - crop.top - crop.bottom,
-      ],
-      textBaselineOffset: {
+    sprites.push(new Sprite(
+      spriteData,
+      measurement.boxWidth - crop.left - crop.right,
+      {
         x: measurement.textX - crop.left,
         y: measurement.textY - crop.top,
       }
-    });
-
+    ));
   }
 
   return sprites;
