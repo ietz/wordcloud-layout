@@ -1,5 +1,5 @@
 import { Size, WordcloudConfig } from '../../config/model';
-import { rightShiftSprite, Sprite } from '../sprites';
+import { Sprite } from '../sprites';
 import { Position } from '../../common';
 import { BLOCK_SIZE, fullArray, range } from '../../util';
 import { Board, buildBoard, extendBoard, intersects, place } from './board';
@@ -47,7 +47,7 @@ const placeSprite = (board: Board, sprite: Sprite): Position | undefined => {
     }
 
     const startBlockX = Math.floor(spritePosition.x / BLOCK_SIZE);
-    const alignedSprite = rightShiftSprite(sprite, spritePosition.x - startBlockX * BLOCK_SIZE);
+    const alignedSprite = sprite.rightShift(spritePosition.x - startBlockX * BLOCK_SIZE);
 
     if (intersects(board, alignedSprite, startBlockX, spritePosition.y)) {
       continue;
