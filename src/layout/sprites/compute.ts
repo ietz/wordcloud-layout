@@ -14,6 +14,6 @@ export const computeSprites = (config: WordcloudConfig): TextSprite[] => {
   canvas.width = canvasSize.width;
   canvas.height = canvasSize.height;
 
-  drawTexts(ctx, config.data, measurements, positions);
+  drawTexts(ctx, config, measurements, positions);
   return readSprites(ctx, measurements, positions);
 }

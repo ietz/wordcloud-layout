@@ -1,7 +1,7 @@
-import { Word, WordcloudConfig } from '../../config/model';
+import { getFontString, Word, WordcloudConfig } from '../../config/model';
 
 export const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConfig, datum: Word): TextMeasurement => {
-  ctx.font = `${config.fontWeight} ${datum.size}px ${config.fontFamily}`;
+  ctx.font = getFontString(config, datum);
   const metrics = ctx.measureText(datum.text);
 
   // Find the size of the text bounding box.
@@ -26,7 +26,6 @@ export const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConf
   const textY = boxHeight / 2 - textPositionFromBoundingBoxCenterDistance * Math.sin(textPositionFromBoundingBoxCenterAngle)
 
   return {
-    font: ctx.font,
     textX,
     textY,
     boxWidth,
@@ -35,7 +34,6 @@ export const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConf
 }
 
 export interface TextMeasurement {
-  font: string,
   textX: number,
   textY: number,
   boxWidth: number,

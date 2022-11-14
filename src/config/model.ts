@@ -13,3 +13,6 @@ export interface Word {
   rotation?: number;
   required?: boolean;
 }
+
+export const getFontString = (config: WordcloudConfig, word: Word) =>
+  `${config.fontWeight} ${word.size}px ${config.fontFamily}`;

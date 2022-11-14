@@ -1,16 +1,16 @@
-import { Size, Word } from '../../config/model';
+import { getFontString, Size, WordcloudConfig } from '../../config/model';
 import { TextMeasurement } from './measure';
 import { Padding, Position } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
 import { TextSprite } from './sprite';
 
-export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measurements: TextMeasurement[], positions: Position[]) => {
-  for (let i = 0; i < data.length; i++) {
-    const datum = data[i];
+export const drawTexts = (ctx: CanvasRenderingContext2D, config: WordcloudConfig, measurements: TextMeasurement[], positions: Position[]) => {
+  for (let i = 0; i < config.data.length; i++) {
+    const datum = config.data[i];
     const measurement = measurements[i];
     const position = positions[i];
 
-    ctx.font = measurement.font;
+    ctx.font = getFontString(config, datum);
 
     ctx.translate(position.x + measurement.textX, position.y + measurement.textY);
     ctx.rotate(datum.rotation ?? 0);
