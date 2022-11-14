@@ -20,7 +20,7 @@ export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: T
     setPosition(i, placeSprite(board, sprite))
 
     if (word.required) {
-      for (let extensionTrials = 5; !positions.has(i) && extensionTrials > 0; extensionTrials--) {
+      for (let extensionTrials = 10; !positions.has(i) && extensionTrials > 0; extensionTrials--) {
         const padding = board.getPaddingForResize(1.2);
         board = board.pad(padding);
         positions = new Map(Array.from(positions.entries()).map(([i, position]) =>
