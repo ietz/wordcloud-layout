@@ -64,8 +64,8 @@ export class Board extends Sprite {
 
   getPaddingForResize = (factor: number): Padding => {
     const [x, y] = this.size.map(value => Math.round(value * (factor - 1)));
-    const [top, left] = [x, y].map(v => Math.floor(v / 2));
-    return {top, bottom: y - top, left, right: y - left}
+    const [left, top] = [x, y].map(v => Math.floor(v / 2));
+    return {top, bottom: y - top, left, right: x - left}
   }
 
   pad = (padding: Padding): Board => {
