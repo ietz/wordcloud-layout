@@ -7,7 +7,7 @@ import { alignPosition, suggestPositions } from './position';
 import { showBoard } from './debugging';
 
 export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: TextSprite[]): LayoutResult => {
-  let board = Board.empty(config.size);
+  let board = Board.empty(getInitialBoardSize(config, words, sprites));
 
   const areas = sprites.map(sprite => sprite.size[0] * sprite.size[1]);
   const order = range(sprites.length).sort((a, b) => areas[b] - areas[a]);
@@ -43,6 +43,21 @@ export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: T
     words: Array.from(positions.entries())
       .map(([i, position]) => ({...words[i], position: position}))
   }
+}
+
+const getInitialBoardSize = (config: WordcloudConfig, words: RenderWord[], sprites: TextSprite[]): Size => {
+  const factor = Math.max(
+    ...range(2).map(dim => {
+      const maxSpriteExtent = Math.max(
+        ...range(words.length)
+          .filter(i => words[i].required)
+          .map(i => sprites[i].size[dim])
+      );
+      return Math.max(1, 1.2 * maxSpriteExtent / config.size[dim]);
+    })
+  )
+
+  return [Math.ceil(config.size[0] * factor), Math.ceil(config.size[1] * factor)];
 }
 
 const placeSprite = (board: Board, sprite: TextSprite): Position | undefined => {
