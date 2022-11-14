@@ -9,8 +9,7 @@ import { showBoard } from './debugging';
 export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: TextSprite[]): LayoutResult => {
   let board = Board.empty(getInitialBoardSize(config, words, sprites));
 
-  const areas = sprites.map(sprite => sprite.size[0] * sprite.size[1]);
-  const order = range(sprites.length).sort((a, b) => areas[b] - areas[a]);
+  const order = range(sprites.length).sort((a, b) => sprites[b].area - sprites[a].area);
 
   let positions = new Map<number, Position>();
   const setPosition = (i: number, value: Position | undefined) => value !== undefined && positions.set(i, value);

@@ -56,7 +56,8 @@ export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMea
       {
         x: measurement.textX - crop.left,
         y: measurement.textY - crop.top,
-      }
+      },
+      measurement.area,
     ));
   }
 

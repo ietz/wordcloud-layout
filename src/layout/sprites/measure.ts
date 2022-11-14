@@ -30,6 +30,7 @@ export const measureText = (ctx: CanvasRenderingContext2D, word: RenderWord): Te
     textY,
     boxWidth,
     boxHeight,
+    area: textWidth * textHeight,
   };
 }
 
@@ -38,4 +39,5 @@ export interface TextMeasurement {
   textY: number,
   boxWidth: number,
   boxHeight: number,
+  area: number,
 }

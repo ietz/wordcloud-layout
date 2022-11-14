@@ -81,6 +81,7 @@ export class TextSprite extends Sprite {
       data: SpriteData,
       width: number,
       public textBaselineOffset: {x: number, y: number},
+      public area: number,
     ) {
         super(data, width);
     }
@@ -92,7 +93,8 @@ export class TextSprite extends Sprite {
           {
               x: this.textBaselineOffset.x - offset,
               y: this.textBaselineOffset.y,
-          }
+          },
+          this.area,
         )
     };
 }
