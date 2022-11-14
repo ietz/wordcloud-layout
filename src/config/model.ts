@@ -10,6 +10,7 @@ export interface WordProperties {
   fontSize: number;
   fontFamily: string;
   fontWeight: number | string;
+  padding: number;
 }
 
 

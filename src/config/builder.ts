@@ -16,6 +16,7 @@ export class Wordcloud<T> {
   fontSize = this.wordConfigAccessor('fontSize');
   fontFamily = this.wordConfigAccessor('fontFamily');
   fontWeight = this.wordConfigAccessor('fontWeight');
+  padding = this.wordConfigAccessor('padding');
 
   start() {
     return layout({
@@ -84,6 +85,7 @@ export const wordcloud = <T>() => {
       fontSize: () => 12,
       fontFamily: () => 'sans-serif',
       fontWeight: () => 400,
+      padding: () => 4,
     }
   )
 }

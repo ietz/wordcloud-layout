@@ -13,8 +13,10 @@ export const measureText = (ctx: CanvasRenderingContext2D, word: Word<unknown>):
   const rotation = word.rotation;
   const sin = Math.abs(Math.sin(rotation));
   const cos = Math.abs(Math.cos(rotation));
-  const boxHeight = Math.ceil(textWidth * sin + textHeight * cos);
-  const boxWidth = Math.ceil(textWidth * cos + textHeight * sin);
+  const paddedTextWidth = textWidth + 2 * word.padding;
+  const paddedTextHeight = textHeight + 2 * word.padding;
+  const boxHeight = Math.ceil(paddedTextWidth * sin + paddedTextHeight * cos);
+  const boxWidth = Math.ceil(paddedTextWidth * cos + paddedTextHeight * sin);
 
   // Determine where to position the text in the sprite map canvas such that is centered inside the computed bounding box.
   const textLeftFromBoundingBoxCenterOffset = textWidth / 2 - metrics.actualBoundingBoxLeft;

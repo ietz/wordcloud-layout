@@ -5,6 +5,10 @@ import { BLOCK_SIZE, range } from '../../util';
 import { TextSprite } from './sprite';
 
 export const drawTexts = (ctx: CanvasRenderingContext2D, words: Word<unknown>[], measurements: TextMeasurement[], positions: Position[]) => {
+  ctx.fillStyle = '#000';
+  ctx.strokeStyle = '#000';
+  ctx.lineJoin = 'round';
+
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
     const measurement = measurements[i];
@@ -15,8 +19,12 @@ export const drawTexts = (ctx: CanvasRenderingContext2D, words: Word<unknown>[],
     ctx.translate(position.x + measurement.textX, position.y + measurement.textY);
     ctx.rotate(word.rotation);
 
-    ctx.fillStyle = '#000';
     ctx.fillText(word.text, 0, 0);
+
+    if (word.padding > 0) {
+      ctx.lineWidth = 2 * word.padding;
+      ctx.strokeText(word.text, 0, 0);
+    }
 
     ctx.resetTransform();
   }
