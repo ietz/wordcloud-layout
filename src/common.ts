@@ -20,6 +20,15 @@ export interface RenderWord {
   font: Font;
 }
 
+export interface RenderWordOutput extends RenderWord {
+  position: Position;
+}
+
+export interface LayoutResult {
+  scale: number;
+  words: RenderWordOutput[];
+}
+
 export class Font {
   constructor(
     public readonly family: string,
@@ -27,7 +36,7 @@ export class Font {
     public readonly weight: number | string,
   ) {}
 
-  toString() {
+  toString = () => {
     return `${this.weight} ${this.size}px ${this.family}`
   }
 }

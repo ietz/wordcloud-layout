@@ -1,9 +1,9 @@
 import { WordcloudConfig } from '../config/model';
 import { computeSprites } from './sprites';
 import { arrange } from './arrangement';
-import { Font, Position, RenderWord } from '../common';
+import { Font, LayoutResult, RenderWord } from '../common';
 
-export const layout = (config: WordcloudConfig): (Position | undefined)[] => {
+export const layout = (config: WordcloudConfig): LayoutResult => {
   const renderWords: RenderWord[] = config.data.map(datum => ({
     datum,
     text: datum.text,

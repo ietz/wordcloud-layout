@@ -1,6 +1,6 @@
 import { Size } from './models';
 import { wordcloud, Wordcloud } from '../src/config/builder';
-import { Position } from '../src/common';
+import { LayoutResult } from '../src/common';
 import { Word } from "../src/config/model";
 
 export function render(size: Size) {
@@ -15,38 +15,36 @@ export function render(size: Size) {
   ];
 
   const layout = wordcloud().size([size.width, size.height]).data(data);
-  const positions = layout.start();
+  const result = layout.start();
 
-  document.querySelector('#app')!.appendChild(buildWordcloudSvg(layout, positions));
+  document.querySelector('#app')!.appendChild(buildWordcloudSvg(layout, result));
 }
 
-const buildWordcloudSvg = (layout: Wordcloud, positions: (Position | undefined)[]) => {
+const buildWordcloudSvg = (layout: Wordcloud, result: LayoutResult) => {
   const size = layout.size();
-  const data = layout.data();
 
   const svg = buildSvgElement('svg')
     .attr('width', size[0])
     .attr('height', size[1])
     .build();
 
-  for (let i = 0; i < data.length; i++) {
-    const position = positions[i];
-    if (position === undefined) {
-      continue;
-    }
+  const g = buildSvgElement('g')
+    .attr('transform', `scale(${result.scale})`)
+    .build();
 
-    const d = data[i];
+  svg.appendChild(g);
 
+  for (const word of result.words) {
     const text = buildSvgElement('text')
-      .style('font-size', `${d.size}px`)
-      .style('font-family', layout.fontFamily())
-      .style('font-weight', layout.fontWeight())
+      .style('font-size', `${word.font.size}px`)
+      .style('font-family', word.font.family)
+      .style('font-weight', word.font.weight)
       .style('fill', '#000')
-      .attr('transform', `translate(${position.x},${position.y}) rotate(${(d.rotation ?? 0) * (180 / Math.PI)})`)
+      .attr('transform', `translate(${word.position.x},${word.position.y}) rotate(${(word.rotation) * (180 / Math.PI)})`)
       .build();
 
-    text.textContent = d.text;
-    svg.appendChild(text);
+    text.textContent = word.text;
+    g.appendChild(text);
   }
 
   return svg;

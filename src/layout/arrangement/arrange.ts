@@ -1,41 +1,48 @@
 import { Size, WordcloudConfig } from '../../config/model';
 import { TextSprite } from '../sprites';
-import { Position, RenderWord } from '../../common';
-import { BLOCK_SIZE, fullArray, range } from '../../util';
+import { LayoutResult, Position, RenderWord } from '../../common';
+import { BLOCK_SIZE, range } from '../../util';
 import { Board } from './board';
 import { alignPosition, suggestPositions } from './position';
 import { showBoard } from './debugging';
 
-export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: TextSprite[]): (Position | undefined)[] => {
+export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: TextSprite[]): LayoutResult => {
   let board = Board.empty(config.size);
 
   const areas = sprites.map(sprite => sprite.size[0] * sprite.size[1]);
   const order = range(sprites.length).sort((a, b) => areas[b] - areas[a]);
 
-  let positions = fullArray<Position | undefined>(sprites.length, undefined);
+  let positions = new Map<number, Position>();
+  const setPosition = (i: number, value: Position | undefined) => value !== undefined && positions.set(i, value);
   for (const i of order) {
     const sprite = sprites[i];
     const word = words[i];
 
-    positions[i] = placeSprite(board, sprite);
+    setPosition(i, placeSprite(board, sprite))
 
     if (word.required) {
-      for (let extensionTrials = 5; positions[i] === undefined && extensionTrials > 0; extensionTrials--) {
+      for (let extensionTrials = 5; !positions.has(i) && extensionTrials > 0; extensionTrials--) {
         const padding = board.getPaddingForResize(1.2);
         board = board.pad(padding);
-        positions = positions.map(position => position ? ({x: position.x + padding.left, y: position.y + padding.top}) : undefined);
-        positions[i] = placeSprite(board, sprite);
+        positions = new Map(Array.from(positions.entries()).map(([i, position]) =>
+          [i, {x: position.x + padding.left, y: position.y + padding.top}]
+        ));
+        setPosition(i, placeSprite(board, sprite));
       }
 
-      if (positions[i] === undefined) {
+      if (!positions.has(i)) {
         console.warn('Could not place word after extending the board');
       }
     }
   }
 
-  showBoard(board);
+  showBoard(board, config);
 
-  return positions;
+  return {
+    scale: Math.min(...range(2).map(dim => config.size[dim] / board.size[dim])),
+    words: Array.from(positions.entries())
+      .map(([i, position]) => ({...words[i], position: position}))
+  }
 }
 
 const placeSprite = (board: Board, sprite: TextSprite): Position | undefined => {

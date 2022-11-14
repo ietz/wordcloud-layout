@@ -1,15 +1,19 @@
-import { BLOCK_SIZE, isBlockPixelOccupied } from '../../util';
+import { BLOCK_SIZE, isBlockPixelOccupied, range } from '../../util';
 import { Board } from './board';
+import { WordcloudConfig } from '../../config/model';
 
-export const showBoard = (board: Board) => {
+export const showBoard = (board: Board, config: WordcloudConfig) => {
   const canvas = document.createElement('canvas');
   canvas.width = board.size[0];
   canvas.height = board.size[1];
 
+  const scale = 1 / Math.max(...range(2).map(dim => board.size[dim] / config.size[dim]));
   canvas.style.position = 'absolute';
   canvas.style.top = '0';
   canvas.style.left = '0';
   canvas.style.zIndex = '-1';
+  canvas.style.width = `${board.size[0]*scale}px`;
+  canvas.style.height = `${board.size[1]*scale}px`;
 
   canvas.getContext('2d')!.putImageData(toImageData(board), 0, 0);
 
