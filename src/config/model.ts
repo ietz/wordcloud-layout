@@ -1,4 +1,4 @@
-export interface WordcloudConfigProperties<T> {
+export interface LayoutProperties<T> {
   size: Size,
   data: T[],
 }
@@ -23,7 +23,7 @@ export type WordConfig<T> = {
   [Property in keyof WordProperties]: (datum: T) => WordProperties[Property]
 }
 
-export interface WordcloudConfig<T = unknown> extends WordcloudConfigProperties<T> {
+export interface WordcloudConfig<T = unknown> extends LayoutProperties<T> {
   words: Word<T>[],
 }
 

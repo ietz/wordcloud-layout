@@ -1,2 +1,2 @@
-export { WordcloudConfigProperties, Size } from './config/model';
+export { LayoutProperties, Size } from './config/model';
 export { wordcloud } from './config/builder';

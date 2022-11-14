@@ -1,9 +1,9 @@
-import { Word, WordcloudConfigProperties, WordConfig, WordProperties } from './model';
+import { Word, LayoutProperties, WordConfig, WordProperties } from './model';
 import { layout } from '../layout';
 
 export class Wordcloud<T> {
   constructor(
-    private readonly config: WordcloudConfigProperties<T>,
+    private readonly layoutConfig: LayoutProperties<T>,
     private readonly wordConfig: WordConfig<T>,
   ) {
   }
@@ -19,21 +19,21 @@ export class Wordcloud<T> {
 
   start() {
     return layout({
-      ...this.config,
-      words: this.config.data.map(datum => wordFromWordConfig(this.wordConfig, datum)),
+      ...this.layoutConfig,
+      words: this.layoutConfig.data.map(datum => wordFromWordConfig(this.wordConfig, datum)),
     });
   }
 
-  wordcloudConfigAccessor<Property extends keyof WordcloudConfigProperties<T>>(property: Property) {
+  wordcloudConfigAccessor<Property extends keyof LayoutProperties<T>>(property: Property) {
     const cloud = this;
 
-    function accessor(): WordcloudConfigProperties<T>[Property];
-    function accessor<Value extends WordcloudConfigProperties<T>[Property]>(value: Value): Wordcloud<T>;
-    function accessor(...args: [] | [WordcloudConfigProperties<T>[Property]]) {
+    function accessor(): LayoutProperties<T>[Property];
+    function accessor<Value extends LayoutProperties<T>[Property]>(value: Value): Wordcloud<T>;
+    function accessor(...args: [] | [LayoutProperties<T>[Property]]) {
       if (args.length === 0) {
-        return cloud.config[property];
+        return cloud.layoutConfig[property];
       } else {
-        return new Wordcloud({...cloud.config, [property]: args[0]}, cloud.wordConfig);
+        return new Wordcloud({...cloud.layoutConfig, [property]: args[0]}, cloud.wordConfig);
       }
     }
 
@@ -52,7 +52,7 @@ export class Wordcloud<T> {
       } else {
         const arg = args[0];
         return new Wordcloud(
-          cloud.config,
+          cloud.layoutConfig,
           {
             ...cloud.wordConfig,
             [property]: typeof arg === 'function' ? arg : () => arg,
