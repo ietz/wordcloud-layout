@@ -1,7 +1,7 @@
-import { RenderWord } from '../../common';
+import { getFontString, Word } from '../../config/model';
 
-export const measureText = (ctx: CanvasRenderingContext2D, word: RenderWord): TextMeasurement => {
-  ctx.font = word.font.toString();
+export const measureText = (ctx: CanvasRenderingContext2D, word: Word<unknown>): TextMeasurement => {
+  ctx.font = getFontString(word);
   const metrics = ctx.measureText(word.text);
 
   // Find the size of the text bounding box.

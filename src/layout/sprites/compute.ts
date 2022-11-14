@@ -2,9 +2,9 @@ import { measureText } from './measure';
 import { boxPack } from './pack';
 import { drawTexts, readSprites } from './canvas';
 import { TextSprite } from './sprite';
-import { RenderWord } from '../../common';
+import { Word } from '../../config/model';
 
-export const computeSprites = (words: RenderWord[]): TextSprite[] => {
+export const computeSprites = (words: Word<unknown>[]): TextSprite[] => {
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d', {willReadFrequently: true})!;
 

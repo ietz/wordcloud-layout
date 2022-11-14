@@ -3,24 +3,33 @@ import { wordcloud, Wordcloud } from '../src/config/builder';
 import { LayoutResult } from '../src/common';
 import { Word } from "../src/config/model";
 
-export function render(size: Size) {
-  const data: Word[] = [
-    {text: 'Hello', size: 30, rotation: 0.2, required: true},
-    {text: 'Word', size: 50, required: true},
-    {text: 'where', size: 8, rotation: -1.2},
-    {text: 'are', size: 38},
-    {text: 'you', size: 21},
-    {text: 'today', size: 23, rotation: 0.4},
-    {text: '@@@', size: 27, rotation: 0.7},
-  ];
+const data = [
+  {text: 'Hello', fontSize: 30, rotation: 0.2, required: true},
+  {text: 'Word', fontSize: 50, required: true},
+  {text: 'where', fontSize: 8, rotation: -1.2},
+  {text: 'are', fontSize: 38},
+  {text: 'you', fontSize: 21},
+  {text: 'today', fontSize: 23, rotation: 0.4},
+  {text: '@@@', fontSize: 27, rotation: 0.7},
+];
 
-  const layout = wordcloud().size([size.width, size.height]).data(data);
+type Datum = (typeof data)[number];
+
+export function render(size: Size) {
+  const layout = wordcloud<Datum>()
+    .size([size.width, size.height])
+    .data(data)
+    .text(d => d.text)
+    .fontSize(d => d.fontSize)
+    .rotation(d => d.rotation ?? 0)
+    .required(d => !!d.required);
+
   const result = layout.start();
 
   document.querySelector('#app')!.appendChild(buildWordcloudSvg(layout, result));
 }
 
-const buildWordcloudSvg = (layout: Wordcloud, result: LayoutResult) => {
+const buildWordcloudSvg = (layout: Wordcloud<Datum>, result: LayoutResult<Datum>) => {
   const size = layout.size();
 
   const svg = buildSvgElement('svg')
@@ -36,9 +45,9 @@ const buildWordcloudSvg = (layout: Wordcloud, result: LayoutResult) => {
 
   for (const word of result.words) {
     const text = buildSvgElement('text')
-      .style('font-size', `${word.font.size}px`)
-      .style('font-family', word.font.family)
-      .style('font-weight', word.font.weight)
+      .style('font-size', `${word.fontSize}px`)
+      .style('font-family', word.fontFamily)
+      .style('font-weight', word.fontWeight)
       .style('fill', '#000')
       .attr('transform', `translate(${word.position.x},${word.position.y}) rotate(${(word.rotation) * (180 / Math.PI)})`)
       .build();

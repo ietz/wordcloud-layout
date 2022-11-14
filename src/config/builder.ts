@@ -1,29 +1,63 @@
-import { WordcloudConfig } from './model';
+import { Word, WordcloudConfigProperties, WordConfig, WordProperties } from './model';
 import { layout } from '../layout';
 
-export class Wordcloud {
-  constructor(private readonly config: WordcloudConfig) {
+export class Wordcloud<T> {
+  constructor(
+    private readonly config: WordcloudConfigProperties<T>,
+    private readonly wordConfig: WordConfig<T>,
+  ) {
   }
 
-  size = this.configAccessor('size');
-  fontWeight = this.configAccessor('fontWeight');
-  fontFamily = this.configAccessor('fontFamily');
-  data = this.configAccessor('data');
+  size = this.wordcloudConfigAccessor('size');
+  data = this.wordcloudConfigAccessor('data');
+  text = this.wordConfigAccessor('text');
+  rotation = this.wordConfigAccessor('rotation');
+  required = this.wordConfigAccessor('required');
+  fontSize = this.wordConfigAccessor('fontSize');
+  fontFamily = this.wordConfigAccessor('fontFamily');
+  fontWeight = this.wordConfigAccessor('fontWeight');
 
   start() {
-    return layout(this.config);
+    return layout({
+      ...this.config,
+      words: this.config.data.map(datum => wordFromWordConfig(this.wordConfig, datum)),
+    });
   }
 
-  configAccessor<Property extends keyof WordcloudConfig>(property: Property) {
+  wordcloudConfigAccessor<Property extends keyof WordcloudConfigProperties<T>>(property: Property) {
     const cloud = this;
 
-    function accessor(): WordcloudConfig[Property];
-    function accessor<Value extends WordcloudConfig[Property]>(value: Value): Wordcloud;
-    function accessor(...args: [] | [WordcloudConfig[Property]]) {
+    function accessor(): WordcloudConfigProperties<T>[Property];
+    function accessor<Value extends WordcloudConfigProperties<T>[Property]>(value: Value): Wordcloud<T>;
+    function accessor(...args: [] | [WordcloudConfigProperties<T>[Property]]) {
       if (args.length === 0) {
         return cloud.config[property];
       } else {
-        return new Wordcloud({...cloud.config, [property]: args[0]})
+        return new Wordcloud({...cloud.config, [property]: args[0]}, cloud.wordConfig);
+      }
+    }
+
+    return accessor;
+  }
+
+  wordConfigAccessor<Property extends keyof WordConfig<T>>(property: Property) {
+    const cloud = this;
+
+    function accessor(): WordConfig<T>[Property];
+    function accessor<Value extends WordProperties[Property]>(value: Value): Wordcloud<T>;
+    function accessor<Accessor extends WordConfig<T>[Property]>(value: Accessor): Wordcloud<T>;
+    function accessor(...args: [] | [WordProperties[Property]] | [WordConfig<T>[Property]]) {
+      if (args.length === 0) {
+        return cloud.wordConfig[property];
+      } else {
+        const arg = args[0];
+        return new Wordcloud(
+          cloud.config,
+          {
+            ...cloud.wordConfig,
+            [property]: typeof arg === 'function' ? arg : () => arg,
+          }
+        )
       }
     }
 
@@ -31,11 +65,25 @@ export class Wordcloud {
   }
 }
 
-export const wordcloud = () => {
-  return new Wordcloud({
-    size: [512, 512],
-    fontFamily: 'sans-serif',
-    fontWeight: 400,
-    data: [],
-  })
+const wordFromWordConfig = <T>(wordConfig: WordConfig<T>, datum: T): Word<T> => {
+  return Object.fromEntries(
+    Object.entries(wordConfig).map(([property, accessor]) => [property, accessor(datum)])
+  ) as unknown as Word<T>;
+}
+
+export const wordcloud = <T>() => {
+  return new Wordcloud<T>(
+    {
+      size: [512, 512],
+      data: [],
+    },
+    {
+      text: () => 'Lorem',
+      rotation: () => 0,
+      required: () => true,
+      fontSize: () => 12,
+      fontFamily: () => 'sans-serif',
+      fontWeight: () => 400,
+    }
+  )
 }

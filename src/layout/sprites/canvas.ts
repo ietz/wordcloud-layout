@@ -1,16 +1,16 @@
-import { Size } from '../../config/model';
+import { getFontString, Size, Word } from '../../config/model';
 import { TextMeasurement } from './measure';
-import { Padding, Position, RenderWord } from '../../common';
+import { Padding, Position } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
 import { TextSprite } from './sprite';
 
-export const drawTexts = (ctx: CanvasRenderingContext2D, words: RenderWord[], measurements: TextMeasurement[], positions: Position[]) => {
+export const drawTexts = (ctx: CanvasRenderingContext2D, words: Word<unknown>[], measurements: TextMeasurement[], positions: Position[]) => {
   for (let i = 0; i < words.length; i++) {
     const word = words[i];
     const measurement = measurements[i];
     const position = positions[i];
 
-    ctx.font = word.font.toString();
+    ctx.font = getFontString(word);
 
     ctx.translate(position.x + measurement.textX, position.y + measurement.textY);
     ctx.rotate(word.rotation);

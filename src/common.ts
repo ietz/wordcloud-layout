@@ -12,31 +12,11 @@ export interface Padding {
   right: number;
 }
 
-export interface RenderWord {
-  datum: Word;
-  required: boolean;
-  rotation: number;
-  text: string;
-  font: Font;
-}
-
-export interface RenderWordOutput extends RenderWord {
+export interface WordOutput<T> extends Word<T> {
   position: Position;
 }
 
-export interface LayoutResult {
+export interface LayoutResult<T> {
   scale: number;
-  words: RenderWordOutput[];
-}
-
-export class Font {
-  constructor(
-    public readonly family: string,
-    public readonly size: number,
-    public readonly weight: number | string,
-  ) {}
-
-  toString = () => {
-    return `${this.weight} ${this.size}px ${this.family}`
-  }
+  words: WordOutput<T>[];
 }

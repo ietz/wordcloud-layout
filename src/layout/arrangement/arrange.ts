@@ -1,13 +1,13 @@
 import { Size, WordcloudConfig } from '../../config/model';
 import { TextSprite } from '../sprites';
-import { LayoutResult, Position, RenderWord } from '../../common';
+import { LayoutResult, Position } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
 import { Board } from './board';
 import { alignPosition, suggestPositions } from './position';
 import { showBoard } from './debugging';
 
-export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: TextSprite[]): LayoutResult => {
-  let board = Board.empty(getInitialBoardSize(config, words, sprites));
+export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): LayoutResult<T> => {
+  let board = Board.empty(getInitialBoardSize(config, sprites));
 
   const order = range(sprites.length).sort((a, b) => sprites[b].area - sprites[a].area);
 
@@ -15,7 +15,7 @@ export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: T
   const setPosition = (i: number, value: Position | undefined) => value !== undefined && positions.set(i, value);
   for (const i of order) {
     const sprite = sprites[i];
-    const word = words[i];
+    const word = config.words[i];
 
     setPosition(i, placeSprite(board, sprite))
 
@@ -40,16 +40,16 @@ export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: T
   return {
     scale: Math.min(...range(2).map(dim => config.size[dim] / board.size[dim])),
     words: Array.from(positions.entries())
-      .map(([i, position]) => ({...words[i], position: position}))
+      .map(([i, position]) => ({...config.words[i], position: position}))
   }
 }
 
-const getInitialBoardSize = (config: WordcloudConfig, words: RenderWord[], sprites: TextSprite[]): Size => {
+const getInitialBoardSize = (config: WordcloudConfig, sprites: TextSprite[]): Size => {
   const factor = Math.max(
     ...range(2).map(dim => {
       const maxSpriteExtent = Math.max(
-        ...range(words.length)
-          .filter(i => words[i].required)
+        ...range(config.words.length)
+          .filter(i => config.words[i].required)
           .map(i => sprites[i].size[dim])
       );
       return Math.max(1, 1.2 * maxSpriteExtent / config.size[dim]);
