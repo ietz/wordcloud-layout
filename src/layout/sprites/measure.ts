@@ -1,8 +1,8 @@
-import { getFontString, Word, WordcloudConfig } from '../../config/model';
+import { RenderWord } from '../../common';
 
-export const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConfig, datum: Word): TextMeasurement => {
-  ctx.font = getFontString(config, datum);
-  const metrics = ctx.measureText(datum.text);
+export const measureText = (ctx: CanvasRenderingContext2D, word: RenderWord): TextMeasurement => {
+  ctx.font = word.font.toString();
+  const metrics = ctx.measureText(word.text);
 
   // Find the size of the text bounding box.
   // Using the actual[…] metrics allows us to arrange.ts a more compact sprite map than would be possible otherwise.
@@ -10,7 +10,7 @@ export const measureText = (ctx: CanvasRenderingContext2D, config: WordcloudConf
   const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
 
   // Compute the size of the bounding box required for the rotated text
-  const rotation = datum.rotation ?? 0;
+  const rotation = word.rotation;
   const sin = Math.abs(Math.sin(rotation));
   const cos = Math.abs(Math.cos(rotation));
   const boxHeight = Math.ceil(textWidth * sin + textHeight * cos);

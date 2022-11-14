@@ -1,12 +1,12 @@
 import { Size, WordcloudConfig } from '../../config/model';
 import { TextSprite } from '../sprites';
-import { Position } from '../../common';
+import { Position, RenderWord } from '../../common';
 import { BLOCK_SIZE, fullArray, range } from '../../util';
 import { Board } from './board';
 import { alignPosition, suggestPositions } from './position';
 import { showBoard } from './debugging';
 
-export const arrange = (config: WordcloudConfig, sprites: TextSprite[]): (Position | undefined)[] => {
+export const arrange = (config: WordcloudConfig, words: RenderWord[], sprites: TextSprite[]): (Position | undefined)[] => {
   let board = Board.empty(config.size);
 
   const areas = sprites.map(sprite => sprite.size[0] * sprite.size[1]);
@@ -15,7 +15,7 @@ export const arrange = (config: WordcloudConfig, sprites: TextSprite[]): (Positi
   let positions = fullArray<Position | undefined>(sprites.length, undefined);
   for (const i of order) {
     const sprite = sprites[i];
-    const word = config.data[i];
+    const word = words[i];
 
     positions[i] = placeSprite(board, sprite);
 
