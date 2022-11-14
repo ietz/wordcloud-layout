@@ -1,7 +1,7 @@
 import { Size } from '../../config/model';
 import { BLOCK_SIZE, fullArray, range } from '../../util';
 import { rightShiftBlock, TextSprite } from '../sprites';
-import { Sprite } from '../sprites/textSprite';
+import { Sprite } from '../sprites/sprite';
 import { SpriteData } from '../sprites/canvas';
 import { Padding } from '../../common';
 

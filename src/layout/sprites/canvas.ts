@@ -2,7 +2,7 @@ import { Size, Word } from '../../config/model';
 import { TextMeasurement } from './measure';
 import { Padding, Position } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
-import { TextSprite } from './textSprite';
+import { TextSprite } from './sprite';
 
 export const drawTexts = (ctx: CanvasRenderingContext2D, data: Word[], measurements: TextMeasurement[], positions: Position[]) => {
   for (let i = 0; i < data.length; i++) {

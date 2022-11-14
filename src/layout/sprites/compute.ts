@@ -2,7 +2,7 @@ import { WordcloudConfig } from '../../config/model';
 import { measureText } from './measure';
 import { boxPack } from './pack';
 import { drawTexts, readSprites } from './canvas';
-import { TextSprite } from './textSprite';
+import { TextSprite } from './sprite';
 
 export const computeSprites = (config: WordcloudConfig): TextSprite[] => {
   const canvas = document.createElement('canvas');
