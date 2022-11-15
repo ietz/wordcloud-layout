@@ -4,7 +4,6 @@ import { LayoutResult, Position } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
 import { Board } from './board';
 import { alignPosition, suggestPositions } from './position';
-import { showBoard } from './debugging';
 import seedrandom from 'seedrandom';
 
 export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): LayoutResult<T> => {
@@ -37,7 +36,7 @@ export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): L
     }
   }
 
-  showBoard(board, config);
+  // showBoard(board, config);
 
   return {
     scale: Math.min(...range(2).map(dim => config.size[dim] / board.size[dim])),
