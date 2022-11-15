@@ -1,7 +1,6 @@
 import { BLOCK_SIZE, fullArray, range } from '../../util';
-import { rightShiftBlock, TextSprite } from '../sprites';
-import { Sprite } from '../sprites/sprite';
-import type { SpriteData } from '../sprites/canvas';
+import { rightShiftBlock, Sprite, TextSprite } from '../sprites';
+import type { SpriteData } from '../sprites';
 import type { Padding, Size } from '../../common';
 
 export class Board extends Sprite {
