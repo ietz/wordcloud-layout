@@ -7,10 +7,13 @@
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
   "scripts": {
-    "build": "parcel build",
+    "build": "parcel build --no-source-maps",
     "serve-example": "parcel examples/index.html --dist-dir examples/dist",
     "prepublish": "npm run build"
   },
+  "files": [
+    "dist/"
+  ],
   "author": "Tim Pietz",
   "license": "MIT",
   "devDependencies": {
