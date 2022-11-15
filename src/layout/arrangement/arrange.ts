@@ -1,6 +1,6 @@
-import { WordcloudConfig } from '../../config';
-import { TextSprite } from '../sprites';
-import { LayoutResult, Position, Size } from '../../common';
+import type { WordcloudConfig } from '../../config';
+import type { TextSprite } from '../sprites';
+import type { LayoutResult, Position, Size } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
 import { Board } from './board';
 import { alignPosition, suggestPositions } from './position';

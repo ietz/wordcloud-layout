@@ -1,8 +1,8 @@
 import { BLOCK_SIZE, fullArray, range } from '../../util';
 import { rightShiftBlock, TextSprite } from '../sprites';
 import { Sprite } from '../sprites/sprite';
-import { SpriteData } from '../sprites/canvas';
-import { Padding, Size } from '../../common';
+import type { SpriteData } from '../sprites/canvas';
+import type { Padding, Size } from '../../common';
 
 export class Board extends Sprite {
   approximateOccupiedArea = 0;

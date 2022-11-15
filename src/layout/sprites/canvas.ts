@@ -1,6 +1,7 @@
-import { getFontString, Word } from '../../config';
-import { TextMeasurement } from './measure';
-import { Padding, Position, Size } from '../../common';
+import type { Word } from '../../config';
+import { getFontString } from '../../config';
+import type { TextMeasurement } from './measure';
+import type { Padding, Position, Size } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';
 import { TextSprite } from './sprite';
 

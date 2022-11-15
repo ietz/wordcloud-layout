@@ -1,4 +1,5 @@
-import { getFontString, Word } from '../../config';
+import type { Word } from '../../config';
+import { getFontString } from '../../config';
 
 export const measureText = (ctx: CanvasRenderingContext2D, word: Word<unknown>): TextMeasurement => {
   ctx.font = getFontString(word);

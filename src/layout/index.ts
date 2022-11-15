@@ -1,7 +1,7 @@
-import { WordcloudConfig } from '../config';
+import type { WordcloudConfig } from '../config';
 import { computeSprites } from './sprites';
 import { arrange } from './arrangement';
-import { LayoutResult } from '../common';
+import type { LayoutResult } from '../common';
 
 export const layout = <T>(config: WordcloudConfig<T>): LayoutResult<T> => {
   const sprites = computeSprites(config.words);

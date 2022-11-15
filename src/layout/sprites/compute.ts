@@ -1,8 +1,8 @@
 import { measureText } from './measure';
 import { boxPack } from './pack';
 import { drawTexts, readSprites } from './canvas';
-import { TextSprite } from './sprite';
-import { Word } from '../../config';
+import type { TextSprite } from './sprite';
+import type { Word } from '../../config';
 
 export const computeSprites = (words: Word<unknown>[]): TextSprite[] => {
   const canvas = document.createElement('canvas');

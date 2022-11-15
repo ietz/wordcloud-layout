@@ -1,6 +1,6 @@
-import { Position, Size } from '../../common';
-import { TextSprite } from '../sprites';
-import seedrandom from 'seedrandom';
+import type { Position, Size } from '../../common';
+import type { TextSprite } from '../sprites';
+import type seedrandom from 'seedrandom';
 
 export function* suggestPositions({boardSize, sprite, occupiedBoardArea, rng}: {boardSize: Size, sprite: TextSprite, occupiedBoardArea: number, rng: seedrandom.PRNG}) {
   const boardFillRatio = occupiedBoardArea / boardSize[0] / boardSize[1];

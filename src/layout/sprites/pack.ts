@@ -1,5 +1,5 @@
 import { fullArray, range } from '../../util';
-import { Position, Size } from '../../common';
+import type { Position, Size } from '../../common';
 
 export const boxPack = (sizes: Size[]) => {
   // place texts with large box heights first

@@ -1,6 +1,6 @@
 import { BLOCK_SIZE, isBlockPixelOccupied, range } from '../../util';
-import { Board } from './board';
-import { WordcloudConfig } from '../../config';
+import type { Board } from './board';
+import type { WordcloudConfig } from '../../config';
 
 export const showBoard = (board: Board, config: WordcloudConfig) => {
   const canvas = document.createElement('canvas');

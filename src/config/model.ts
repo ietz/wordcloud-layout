@@ -1,4 +1,4 @@
-import { Size } from '../common';
+import type { Size } from '../common';
 
 export interface LayoutProperties<T> {
   size: Size,

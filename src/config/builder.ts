@@ -1,4 +1,4 @@
-import { LayoutProperties, Word, WordConfig, WordProperties } from './model';
+import type { LayoutProperties, Word, WordConfig, WordProperties } from './model';
 import { layout } from '../layout';
 
 export class Wordcloud<T> {
