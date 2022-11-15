@@ -5,9 +5,11 @@ import { BLOCK_SIZE, range } from '../../util';
 import { Board } from './board';
 import { alignPosition, suggestPositions } from './position';
 import { showBoard } from './debugging';
+import seedrandom from 'seedrandom';
 
 export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): LayoutResult<T> => {
   let board = Board.empty(getInitialBoardSize(config, sprites));
+  const rng = seedrandom(config.seed);
 
   const order = range(sprites.length).sort((a, b) => sprites[b].area - sprites[a].area);
 
@@ -17,7 +19,7 @@ export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): L
     const sprite = sprites[i];
     const word = config.words[i];
 
-    setPosition(i, placeSprite(board, sprite))
+    setPosition(i, placeSprite(board, sprite, rng));
 
     if (word.required) {
       for (let extensionTrials = 10; !positions.has(i) && extensionTrials > 0; extensionTrials--) {
@@ -26,7 +28,7 @@ export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): L
         positions = new Map(Array.from(positions.entries()).map(([i, position]) =>
           [i, {x: position.x + padding.left, y: position.y + padding.top}]
         ));
-        setPosition(i, placeSprite(board, sprite));
+        setPosition(i, placeSprite(board, sprite, rng));
       }
 
       if (!positions.has(i)) {
@@ -59,8 +61,8 @@ const getInitialBoardSize = (config: WordcloudConfig, sprites: TextSprite[]): Si
   return [Math.ceil(config.size[0] * factor), Math.ceil(config.size[1] * factor)];
 }
 
-const placeSprite = (board: Board, sprite: TextSprite): Position | undefined => {
-  for (const suggestedTextPosition of suggestPositions({boardSize: board.size, sprite})) {
+const placeSprite = (board: Board, sprite: TextSprite, rng: seedrandom.PRNG): Position | undefined => {
+  for (const suggestedTextPosition of suggestPositions({boardSize: board.size, sprite, rng})) {
     const {textPosition, spritePosition} = alignPosition(suggestedTextPosition, sprite);
 
     if (!isInsideBoard(board.size, sprite.size, spritePosition)) {

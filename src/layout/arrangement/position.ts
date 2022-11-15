@@ -1,8 +1,9 @@
 import { Size } from '../../config/model';
 import { Position } from '../../common';
 import { TextSprite } from '../sprites';
+import seedrandom from 'seedrandom';
 
-export function* suggestPositions({boardSize, sprite}: {boardSize: Size, sprite: TextSprite}) {
+export function* suggestPositions({boardSize, sprite, rng}: {boardSize: Size, sprite: TextSprite, rng: seedrandom.PRNG}) {
   const center = {x: 0.5 * boardSize[0], y: 0.5 * boardSize[1]};
 
   const xStretchFactor = boardSize[0] / boardSize[1];
@@ -13,9 +14,11 @@ export function* suggestPositions({boardSize, sprite}: {boardSize: Size, sprite:
     boardSize[1] - center.y, // to bottom
   )
 
+  const direction = rng() > 0.5 ? 1 : -1;
+
   for (let spiralDistanceFromCenter = 0; spiralDistanceFromCenter < maxSpiralDistanceFromCenter; spiralDistanceFromCenter += 0.1) {
     yield textPositionFromCenter({
-      x: center.x + xStretchFactor * spiralDistanceFromCenter * Math.cos(spiralDistanceFromCenter),
+      x: center.x + direction * xStretchFactor * spiralDistanceFromCenter * Math.cos(spiralDistanceFromCenter),
       y: center.y + spiralDistanceFromCenter * Math.sin(spiralDistanceFromCenter),
     }, sprite)
   }
