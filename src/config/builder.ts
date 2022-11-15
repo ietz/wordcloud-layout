@@ -87,7 +87,7 @@ export const wordcloud = <T>() => {
       fontSize: () => 12,
       fontFamily: () => 'sans-serif',
       fontWeight: () => 400,
-      padding: () => 4,
+      padding: () => 2,
     }
   )
 }
