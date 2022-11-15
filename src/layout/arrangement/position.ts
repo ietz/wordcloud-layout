@@ -1,5 +1,4 @@
-import { Size } from '../../config/model';
-import { Position } from '../../common';
+import { Position, Size } from '../../common';
 import { TextSprite } from '../sprites';
 import seedrandom from 'seedrandom';
 

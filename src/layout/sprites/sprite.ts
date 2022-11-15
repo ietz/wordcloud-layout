@@ -1,6 +1,6 @@
 import { SpriteData } from "./canvas";
-import { Size } from "../../config/model";
 import { BLOCK_SIZE, range } from '../../util';
+import { Size } from '../../common';
 
 export class Sprite {
     size: Size;

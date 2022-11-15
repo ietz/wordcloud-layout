@@ -1,3 +1,5 @@
+import { Size } from '../common';
+
 export interface LayoutProperties<T> {
   size: Size,
   data: T[],
@@ -29,4 +31,3 @@ export interface WordcloudConfig<T = unknown> extends LayoutProperties<T> {
   words: Word<T>[],
 }
 
-export type Size = [width: number, height: number];
