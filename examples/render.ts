@@ -1,7 +1,5 @@
 import { Size } from './models';
-import { wordcloud, Wordcloud } from '../src/config/builder';
-import { LayoutResult } from '../src/common';
-import { Word } from "../src/config/model";
+import { LayoutResult, Word, wordcloud, Wordcloud } from '../src';
 
 const data = [
   {text: 'Hello', fontSize: 30, rotation: 0.2, required: true},

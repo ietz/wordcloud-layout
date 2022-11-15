@@ -1,4 +1,4 @@
-import { WordcloudConfig } from '../../config/model';
+import { WordcloudConfig } from '../../config';
 import { TextSprite } from '../sprites';
 import { LayoutResult, Position, Size } from '../../common';
 import { BLOCK_SIZE, range } from '../../util';

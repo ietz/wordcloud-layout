@@ -1,3 +1,2 @@
-export { LayoutProperties } from './config/model';
-export { wordcloud } from './config/builder';
-export { Size } from './common';
+export { wordcloud, Wordcloud, Word, WordcloudConfig, getFontString } from './config';
+export { Size, Position, LayoutResult, WordOutput } from './common';

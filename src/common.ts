@@ -1,4 +1,4 @@
-import { Word } from './config/model';
+import { Word } from './config';
 
 export type Size = [width: number, height: number];
 export type Position = [x: number, y: number];

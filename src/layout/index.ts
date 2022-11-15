@@ -1,4 +1,4 @@
-import { WordcloudConfig } from '../config/model';
+import { WordcloudConfig } from '../config';
 import { computeSprites } from './sprites';
 import { arrange } from './arrangement';
 import { LayoutResult } from '../common';
