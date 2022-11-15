@@ -68,9 +68,12 @@ export class Wordcloud<T> {
 }
 
 const wordFromWordConfig = <T>(wordConfig: WordConfig<T>, datum: T): Word<T> => {
-  return Object.fromEntries(
-    Object.entries(wordConfig).map(([property, accessor]) => [property, accessor(datum)])
-  ) as unknown as Word<T>;
+  return {
+    datum,
+    ...Object.fromEntries(
+      Object.entries(wordConfig).map(([property, accessor]) => [property, accessor(datum)])
+    ) as unknown as WordProperties
+  };
 }
 
 export const wordcloud = <T>() => {
