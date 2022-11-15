@@ -32,7 +32,7 @@ export const measureText = (ctx: CanvasRenderingContext2D, word: Word<unknown>):
     textY,
     boxWidth,
     boxHeight,
-    area: textWidth * textHeight,
+    area: paddedTextWidth * paddedTextHeight,
   };
 }
 
