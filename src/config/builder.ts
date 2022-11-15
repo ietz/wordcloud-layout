@@ -1,4 +1,4 @@
-import { Word, LayoutProperties, WordConfig, WordProperties } from './model';
+import { LayoutProperties, Word, WordConfig, WordProperties } from './model';
 import { layout } from '../layout';
 
 export class Wordcloud<T> {
@@ -10,6 +10,7 @@ export class Wordcloud<T> {
 
   size = this.wordcloudConfigAccessor('size');
   data = this.wordcloudConfigAccessor('data');
+  seed = this.wordcloudConfigAccessor('seed');
   text = this.wordConfigAccessor('text');
   rotation = this.wordConfigAccessor('rotation');
   required = this.wordConfigAccessor('required');
@@ -77,6 +78,7 @@ export const wordcloud = <T>() => {
     {
       size: [512, 512],
       data: [],
+      seed: 'wordcloud',
     },
     {
       text: () => 'Lorem',

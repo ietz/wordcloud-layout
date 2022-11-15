@@ -1,6 +1,7 @@
 export interface LayoutProperties<T> {
   size: Size,
   data: T[],
+  seed: string,
 }
 
 export interface WordProperties {
