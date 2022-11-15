@@ -50,7 +50,7 @@ const buildWordcloudSvg = (layout: Wordcloud<Datum>, result: LayoutResult<Datum>
       .style('font-family', word.fontFamily)
       .style('font-weight', word.fontWeight)
       .style('fill', '#000')
-      .attr('transform', `translate(${word.position.x},${word.position.y}) rotate(${(word.rotation) * (180 / Math.PI)})`)
+      .attr('transform', `translate(${word.position[0]},${word.position[1]}) rotate(${(word.rotation) * (180 / Math.PI)})`)
       .build();
 
     text.textContent = word.text;

@@ -5,6 +5,7 @@ import { BLOCK_SIZE, range } from '../../util';
 import { Board } from './board';
 import { alignPosition, suggestPositions } from './position';
 import seedrandom from 'seedrandom';
+import { showBoard } from './debugging';
 
 export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): LayoutResult<T> => {
   let board = Board.empty(getInitialBoardSize(config, sprites));
@@ -24,8 +25,8 @@ export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): L
       for (let extensionTrials = 10; !positions.has(i) && extensionTrials > 0; extensionTrials--) {
         const padding = board.getPaddingForResize(1.2);
         board = board.pad(padding);
-        positions = new Map(Array.from(positions.entries()).map(([i, position]) =>
-          [i, {x: position.x + padding.left, y: position.y + padding.top}]
+        positions = new Map(Array.from(positions.entries()).map(([i, [x, y]]) =>
+          [i, [x + padding.left, y + padding.top]]
         ));
         setPosition(i, placeSprite(board, sprite, rng));
       }
@@ -36,7 +37,7 @@ export const arrange = <T>(config: WordcloudConfig<T>, sprites: TextSprite[]): L
     }
   }
 
-  // showBoard(board, config);
+  showBoard(board, config);
 
   return {
     scale: Math.min(...range(2).map(dim => config.size[dim] / board.size[dim])),
@@ -68,23 +69,23 @@ const placeSprite = (board: Board, sprite: TextSprite, rng: seedrandom.PRNG): Po
       continue;
     }
 
-    const startBlockX = Math.floor(spritePosition.x / BLOCK_SIZE);
-    const alignedSprite = sprite.rightShift(spritePosition.x - startBlockX * BLOCK_SIZE);
+    const startBlockX = Math.floor(spritePosition[0] / BLOCK_SIZE);
+    const alignedSprite = sprite.rightShift(spritePosition[0] - startBlockX * BLOCK_SIZE);
 
-    if (board.intersects(alignedSprite, startBlockX, spritePosition.y)) {
+    if (board.intersects(alignedSprite, startBlockX, spritePosition[1])) {
       continue;
     }
 
-    board.place(alignedSprite, startBlockX, spritePosition.y);
+    board.place(alignedSprite, startBlockX, spritePosition[1]);
     return textPosition;
   }
 };
 
 export const isInsideBoard = (boardSize: Size, spriteSize: Size, spritePosition: Position) => {
   return (
-      spritePosition.x >= 0 &&
-      spritePosition.y >= 0 &&
-      spritePosition.x + spriteSize[0] <= boardSize[0] &&
-      spritePosition.y + spriteSize[1] <= boardSize[1]
+      spritePosition[0] >= 0 &&
+      spritePosition[1] >= 0 &&
+      spritePosition[0] + spriteSize[0] <= boardSize[0] &&
+      spritePosition[1] + spriteSize[1] <= boardSize[1]
   )
 }

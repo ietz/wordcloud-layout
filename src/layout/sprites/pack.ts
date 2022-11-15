@@ -6,7 +6,7 @@ export const boxPack = (sizes: Size[]) => {
   const order = range(sizes.length).sort((a, b) => sizes[b][1] - sizes[a][1]);
   const positions = fullArray<Position | undefined>(sizes.length, undefined);
   // place first item at top left corner
-  positions[order[0]] = {x: 0, y: 0};
+  positions[order[0]] = [0, 0];
 
   let x = sizes[order[0]][0];
   let y = 0;
@@ -32,7 +32,7 @@ export const boxPack = (sizes: Size[]) => {
       lineHeight = height;
     }
 
-    positions[order[i]] = {x, y};
+    positions[order[i]] = [x, y];
 
     remainingOnFirstLine -= 1;
     x += width;

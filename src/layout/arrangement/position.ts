@@ -6,34 +6,34 @@ export function* suggestPositions({boardSize, sprite, occupiedBoardArea, rng}: {
   const boardFillRatio = occupiedBoardArea / boardSize[0] / boardSize[1];
   const randomCenterSize = Math.sqrt(boardFillRatio);
 
-  const center = {
-    x: ((rng() - 0.5) * randomCenterSize + 0.5) * boardSize[0],
-    y: ((rng() - 0.5) * randomCenterSize + 0.5) * boardSize[1],
-  };
+  const center: Position = [
+    ((rng() - 0.5) * randomCenterSize + 0.5) * boardSize[0],
+    ((rng() - 0.5) * randomCenterSize + 0.5) * boardSize[1],
+  ];
 
   const xStretchFactor = boardSize[0] / boardSize[1];
   const maxSpiralDistanceFromCenter = Math.max(
-    center.x * xStretchFactor,  // to left border
-    (boardSize[0] - center.x) * xStretchFactor,  // to right border
-    center.y, // to top
-    boardSize[1] - center.y, // to bottom
+    center[0] * xStretchFactor,  // to left border
+    (boardSize[0] - center[0]) * xStretchFactor,  // to right border
+    center[1], // to top
+    boardSize[1] - center[1], // to bottom
   )
 
   const direction = rng() > 0.5 ? 1 : -1;
 
   for (let spiralDistanceFromCenter = 0; spiralDistanceFromCenter < maxSpiralDistanceFromCenter; spiralDistanceFromCenter += 0.1) {
-    yield textPositionFromCenter({
-      x: center.x + direction * xStretchFactor * spiralDistanceFromCenter * Math.cos(spiralDistanceFromCenter),
-      y: center.y + spiralDistanceFromCenter * Math.sin(spiralDistanceFromCenter),
-    }, sprite)
+    yield textPositionFromCenter([
+      center[0] + direction * xStretchFactor * spiralDistanceFromCenter * Math.cos(spiralDistanceFromCenter),
+      center[1] + spiralDistanceFromCenter * Math.sin(spiralDistanceFromCenter),
+    ], sprite)
   }
 }
 
 const textPositionFromCenter = (center: Position, sprite: TextSprite): Position => {
-  return {
-    x: center.x - sprite.size[0] / 2 + sprite.textBaselineOffset.x,
-    y: center.y - sprite.size[1] / 2 + sprite.textBaselineOffset.y,
-  }
+  return [
+    center[0] - sprite.size[0] / 2 + sprite.textBaselineOffset.x,
+    center[1] - sprite.size[1] / 2 + sprite.textBaselineOffset.y,
+  ]
 }
 
 export const alignPosition = (suggestedTextPosition: Position, sprite: TextSprite): {textPosition: Position, spritePosition: Position} => {
@@ -44,15 +44,15 @@ export const alignPosition = (suggestedTextPosition: Position, sprite: TextSprit
   // the resulting spritePosition would be [100, 74] and the textPosition [100.2, 99.7].
   // If we insert the sprite at [100, 74], the text in the sprite would appear at [100+0.2=100.2, 74+25.7=99.7].
 
-  const spritePosition: Position = {
-    x: Math.round(suggestedTextPosition.x - sprite.textBaselineOffset.x),
-    y: Math.round(suggestedTextPosition.y - sprite.textBaselineOffset.y),
-  }
+  const spritePosition: Position = [
+    Math.round(suggestedTextPosition[0] - sprite.textBaselineOffset.x),
+    Math.round(suggestedTextPosition[1] - sprite.textBaselineOffset.y),
+  ]
 
-  const textPosition: Position = {
-    x: spritePosition.x + sprite.textBaselineOffset.x,
-    y: spritePosition.y + sprite.textBaselineOffset.y,
-  }
+  const textPosition: Position = [
+    spritePosition[0] + sprite.textBaselineOffset.x,
+    spritePosition[1] + sprite.textBaselineOffset.y,
+  ]
 
   return {textPosition, spritePosition};
 }

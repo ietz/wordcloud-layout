@@ -16,7 +16,7 @@ export const drawTexts = (ctx: CanvasRenderingContext2D, words: Word<unknown>[],
 
     ctx.font = getFontString(word);
 
-    ctx.translate(position.x + measurement.textX, position.y + measurement.textY);
+    ctx.translate(position[0] + measurement.textX, position[1] + measurement.textY);
     ctx.rotate(word.rotation);
 
     ctx.fillText(word.text, 0, 0);
@@ -41,10 +41,10 @@ export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMea
     const crop = cropSpriteMapBounds(imageData, measurement, position);
     const spriteData: number[] = [];
 
-    const yEnd = position.y + measurement.boxHeight - crop.bottom;
-    const xEnd = position.x + measurement.boxWidth - crop.right;
-    for (let y = position.y + crop.top; y < yEnd; y++) {
-      for (let blockX = position.x + crop.left; blockX < xEnd; blockX += BLOCK_SIZE) {
+    const yEnd = position[1] + measurement.boxHeight - crop.bottom;
+    const xEnd = position[0] + measurement.boxWidth - crop.right;
+    for (let y = position[1] + crop.top; y < yEnd; y++) {
+      for (let blockX = position[0] + crop.left; blockX < xEnd; blockX += BLOCK_SIZE) {
         let block = 0;
         for (let blockPixelIndex = 0; blockPixelIndex < BLOCK_SIZE && blockX + blockPixelIndex < xEnd; blockPixelIndex++) {
           const pixelIndex = y * imageData.width + blockX + blockPixelIndex;
@@ -75,33 +75,33 @@ export const readSprites = (ctx: CanvasRenderingContext2D, measurements: TextMea
 const cropSpriteMapBounds = (imageData: ImageData, measurement: TextMeasurement, position: Position): Padding => {
   const isRowEmpty = (y: number) => isImageDataAreaEmpty(
     imageData,
-    {x: position.x, y},
+    [position[0], y],
     [measurement.boxWidth, 1],
   )
 
-  const cropTop = range(measurement.boxHeight).find(topRow => !isRowEmpty(position.y + topRow));
+  const cropTop = range(measurement.boxHeight).find(topRow => !isRowEmpty(position[1] + topRow));
   if (cropTop === undefined) {
     console.warn('Sprite area is empty');
     return {top: 0, bottom: measurement.boxHeight, left: 0, right: measurement.boxWidth};
   }
 
-  const cropBottom = range(measurement.boxHeight).find(bottomRow => !isRowEmpty(position.y + measurement.boxHeight - 1 - bottomRow))!;
+  const cropBottom = range(measurement.boxHeight).find(bottomRow => !isRowEmpty(position[1] + measurement.boxHeight - 1 - bottomRow))!;
 
   const isColumnEmpty = (x: number) => isImageDataAreaEmpty(
     imageData,
-    {x, y: position.y + cropTop},
+    [x, position[1] + cropTop],
     [1, measurement.boxHeight - cropTop - cropBottom],
   );
 
-  const cropLeft = range(measurement.boxWidth).find(leftColumn => !isColumnEmpty(position.x + leftColumn))!;
-  const cropRight = range(measurement.boxWidth).find(rightColumn => !isColumnEmpty(position.x + measurement.boxWidth - 1 - rightColumn))!;
+  const cropLeft = range(measurement.boxWidth).find(leftColumn => !isColumnEmpty(position[0] + leftColumn))!;
+  const cropRight = range(measurement.boxWidth).find(rightColumn => !isColumnEmpty(position[0] + measurement.boxWidth - 1 - rightColumn))!;
 
   return {top: cropTop, bottom: cropBottom, left: cropLeft, right: cropRight};
 }
 
 const isImageDataAreaEmpty = (imageData: ImageData, position: Position, size: Size) => {
-  for (let y = position.y; y < position.y + size[1]; y++) {
-    for (let x = position.x; x < position.x + size[0]; x++) {
+  for (let y = position[1]; y < position[1] + size[1]; y++) {
+    for (let x = position[0]; x < position[0] + size[0]; x++) {
       const pixelStart = (x + y * imageData.width) * 4;
       const alphaValue = imageData.data[pixelStart + 3];
       if (alphaValue > 0) {
