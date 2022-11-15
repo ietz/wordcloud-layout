@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "tsc",
-    "start": "parcel examples/index.html"
+    "serve-example": "parcel examples/index.html --dist-dir examples/dist"
   },
   "author": "Tim Pietz",
   "license": "MIT",
