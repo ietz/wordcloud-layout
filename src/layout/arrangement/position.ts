@@ -3,8 +3,14 @@ import { Position } from '../../common';
 import { TextSprite } from '../sprites';
 import seedrandom from 'seedrandom';
 
-export function* suggestPositions({boardSize, sprite, rng}: {boardSize: Size, sprite: TextSprite, rng: seedrandom.PRNG}) {
-  const center = {x: 0.5 * boardSize[0], y: 0.5 * boardSize[1]};
+export function* suggestPositions({boardSize, sprite, occupiedBoardArea, rng}: {boardSize: Size, sprite: TextSprite, occupiedBoardArea: number, rng: seedrandom.PRNG}) {
+  const boardFillRatio = occupiedBoardArea / boardSize[0] / boardSize[1];
+  const randomCenterSize = Math.sqrt(boardFillRatio);
+
+  const center = {
+    x: ((rng() - 0.5) * randomCenterSize + 0.5) * boardSize[0],
+    y: ((rng() - 0.5) * randomCenterSize + 0.5) * boardSize[1],
+  };
 
   const xStretchFactor = boardSize[0] / boardSize[1];
   const maxSpiralDistanceFromCenter = Math.max(

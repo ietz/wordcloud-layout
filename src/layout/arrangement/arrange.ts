@@ -62,7 +62,7 @@ const getInitialBoardSize = (config: WordcloudConfig, sprites: TextSprite[]): Si
 }
 
 const placeSprite = (board: Board, sprite: TextSprite, rng: seedrandom.PRNG): Position | undefined => {
-  for (const suggestedTextPosition of suggestPositions({boardSize: board.size, sprite, rng})) {
+  for (const suggestedTextPosition of suggestPositions({boardSize: board.size, occupiedBoardArea: board.approximateOccupiedArea, sprite, rng})) {
     const {textPosition, spritePosition} = alignPosition(suggestedTextPosition, sprite);
 
     if (!isInsideBoard(board.size, sprite.size, spritePosition)) {

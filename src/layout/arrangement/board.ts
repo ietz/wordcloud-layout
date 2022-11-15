@@ -6,6 +6,8 @@ import { SpriteData } from '../sprites/canvas';
 import { Padding } from '../../common';
 
 export class Board extends Sprite {
+  approximateOccupiedArea = 0;
+
   static empty = (size: Size): Board => {
     const blockWidth = Math.ceil(size[0] / BLOCK_SIZE);
 
@@ -30,6 +32,8 @@ export class Board extends Sprite {
   }
 
   place = (alignedSprite: TextSprite, startBlockX: number, startY: number) => {
+    this.approximateOccupiedArea += alignedSprite.area;
+
     for (const {boardBlockIndex, spriteBlockIndex} of this.spriteBoardPositions(alignedSprite, startBlockX, startY)) {
       if (boardBlockIndex !== undefined) {
         this.data[boardBlockIndex] |= alignedSprite.data[spriteBlockIndex];
