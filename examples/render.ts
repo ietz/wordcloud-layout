@@ -22,6 +22,7 @@ export function render(size: Size) {
     .text(d => d.text)
     .fontSize(d => d.fontSize)
     .rotation(d => d.rotation ?? 0)
+    .fontWeight(600)
     .required(d => !!d.required);
 
   const result = layout.start();
