@@ -1,5 +1,4 @@
-import { Size } from './models';
-import { LayoutResult, Word, wordcloud, Wordcloud } from '../src';
+import { LayoutResult, Size, Word, Wordcloud, wordcloud } from '../src';
 
 const data = [
   {text: 'Hello', fontSize: 30, rotation: 0.2, required: true},
@@ -15,7 +14,7 @@ type Datum = (typeof data)[number];
 
 export function render(size: Size) {
   const layout = wordcloud<Datum>()
-    .size([size.width, size.height])
+    .size(size)
     .data(data)
     .text(d => d.text)
     .fontSize(d => d.fontSize)

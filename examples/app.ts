@@ -1,5 +1,5 @@
-import { Size } from './models';
 import { render } from './render';
+import { Size } from '../src';
 
 let size: Size;
 const appHost = document.querySelector('#app')!;
@@ -7,7 +7,7 @@ const appHost = document.querySelector('#app')!;
 let rerenderFrameId: number | undefined = undefined;
 const scheduleRerender = () => {
   rerenderFrameId = window.requestAnimationFrame(() => {
-    if (size.width >= 10 && size.height >= 10) {
+    if (size[0] >= 10 && size[0] >= 10) {
       appHost.innerHTML = '';
       render(size);
     }
@@ -18,7 +18,7 @@ const scheduleRerender = () => {
 
 const observer = new ResizeObserver((a) => {
   const rect = a[0].contentRect;
-  size = {width: rect.width, height: rect.height}
+  size = [rect.width, rect.height];
   scheduleRerender();
 });
 observer.observe(appHost);
