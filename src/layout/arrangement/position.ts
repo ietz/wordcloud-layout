@@ -4,7 +4,7 @@ import type seedrandom from 'seedrandom';
 
 export function* suggestPositions({boardSize, sprite, occupiedBoardArea, rng}: {boardSize: Size, sprite: TextSprite, occupiedBoardArea: number, rng: seedrandom.PRNG}) {
   const boardFillRatio = occupiedBoardArea / boardSize[0] / boardSize[1];
-  const randomCenterSize = Math.sqrt(boardFillRatio);
+  const randomCenterSize = Math.sqrt(boardFillRatio) / 2;
 
   const center: Position = [
     ((rng() - 0.5) * randomCenterSize + 0.5) * boardSize[0],
