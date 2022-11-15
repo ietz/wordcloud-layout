@@ -5,6 +5,11 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
-    "importsNotUsedAsValues": "error"
-  }
+    "importsNotUsedAsValues": "error",
+    "declaration": true,
+    "outDir": "dist"
+  },
+  "include": [
+    "src"
+  ]
 }

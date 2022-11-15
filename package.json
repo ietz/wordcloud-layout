@@ -3,11 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "source": "src/index.ts",
-  "main": "dist/main.js",
-  "module": "dist/module.js",
-  "types": "dist/types.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "parcel build --no-source-maps",
+    "build": "tsc",
     "serve-example": "parcel examples/index.html --dist-dir examples/dist",
     "prepublish": "npm run build"
   },
