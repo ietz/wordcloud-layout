@@ -1,6 +1,6 @@
 {
-  "name": "wordcloud",
-  "version": "0.0.1",
+  "name": "wordcloud-layout",
+  "version": "1.0.0",
   "description": "",
   "scripts": {
     "build": "tsc",
