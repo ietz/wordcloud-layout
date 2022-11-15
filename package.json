@@ -8,7 +8,8 @@
   "types": "dist/types.d.ts",
   "scripts": {
     "build": "parcel build",
-    "serve-example": "parcel examples/index.html --dist-dir examples/dist"
+    "serve-example": "parcel examples/index.html --dist-dir examples/dist",
+    "prepublish": "npm run build"
   },
   "author": "Tim Pietz",
   "license": "MIT",
